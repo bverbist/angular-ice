@@ -1,0 +1,74 @@
+.text-blue {
+    color: #008B8B;
+}
+
+.text-orange {
+    color: #FF8C00;
+}
+
+#examples h2 {
+    padding-top: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+#examples h3 {
+    padding-top: 15px;
+    padding-bottom: 5px;
+}
+
+#examples h4 {
+    padding-top: 15px;
+}
+
+#examples p {
+    padding: 0px;
+}
+
+#examples pre {
+    padding: 0px;
+    spacing: 0px;
+}
+
+#examples code {
+    padding: 0px;
+    spacing: 0px;
+    color: #556B2F;
+}
+
+#examples code .tag {
+}
+
+#examples code .indent {
+    padding-left: 20px;
+}
+
+#examples code .ice {
+    color: #FF8C00;
+}
+
+#examples code .optional {
+    color: #008B8B;
+}
+
+#examples code .other {
+}
+
+#examples .arguments {
+    border: 1px solid #ddd;
+    width: 100%;
+}
+
+#examples .arguments th {
+    background: #f1f1f1;
+    padding: 5px;
+}
+
+#examples .arguments td {
+    border: 1px solid #eee;
+    padding: 5px;
+}
+
+#examples .form-control {
+    width: 50%;
+}

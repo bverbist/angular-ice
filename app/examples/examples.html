@@ -1,0 +1,72 @@
+<form name="$parent.examplesForm" id="examples" autocomplete="on" novalidate>
+    <h2>Form directives</h2>
+
+    <h3 class="text-blue">ice-auto-select-content-on</h3>
+
+    <h4>Directive Info</h4>
+
+    <p>To automatically select the content of an (input) element when an event (configurable) is triggered on the element.</p>
+
+    <h4>Usage</h4>
+
+    <pre>
+        <code>
+            <span class="tag">&lt;input</span>
+            <span class="indent other">...</span>
+            <span class="indent ice">ice-auto-select-content-on</span><span class="optional">[="mouseover"]</span>
+            <span class="indent optional">[ice-deselect-event="mouseout"]</span>
+            <span class="indent other">...</span>
+            <span class="tag">&lt;/input&gt;</span>
+        </code>
+    </pre>
+
+    <h4>Arguments</h4>
+
+    <table class="arguments">
+        <thead>
+            <tr>
+                <th>Param</th>
+                <th>Value type</th>
+                <th>Default value</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ice-auto-select-content-on</td>
+                <td>string</td>
+                <td>click</td>
+                <td>Valid event. Value is optional</td>
+            </tr>
+            <tr>
+                <td>ice-deselect-event<br><i>(optional)</i></td>
+                <td>string</td>
+                <td>blur</td>
+                <td>Valid event.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>Example(s)</h4>
+
+    <p>When default events are used: element selected on <b>'click'</b> + de-selected on <b>'blur'</b>
+        <input class="form-control"
+               type="text"
+               name="autoSelectDefault"
+               ng-model="model.autoSelectDefault"
+               tabindex="1"
+               ng-trim="true"
+               ice-auto-select-content-on>
+    </p>
+
+    <p>When element selected on <b>'mouseover'</b> + de-selected on <b>'mouseout'</b>
+        <input class="form-control"
+               type="text"
+               name="autoSelectDefault"
+               ng-model="model.autoSelectOtherEvent"
+               tabindex="2"
+               ng-trim="true"
+               ice-auto-select-content-on="mouseover"
+               ice-deselect-event="mouseout">
+    </p>
+</form>
