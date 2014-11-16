@@ -24,7 +24,7 @@ angular.module('myApp', ['ice.forms']);
 
 ## Documentation
 
-Coming soon ...
+See the [examples](http://bverbist.github.io/angular-ice/)
 
 ## License
 
