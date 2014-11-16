@@ -18,7 +18,8 @@ module.exports = function (grunt) {
     // Configurable paths for the application
     var appConfig = {
         app: require('./bower.json').appPath || 'app',
-        dist: '../bower-angular-ice',
+        bowerComp: '../bower-angular-ice',
+        ghPages: '../angular-ice-pages',
         packageBaseName: 'angular-ice',
         getFilesJs: function() {
             return [
@@ -185,15 +186,42 @@ module.exports = function (grunt) {
             },
             componentJsFiles: {
                 files: {
-                    '<%= yeoman.dist %>/<%= yeoman.packageBaseName %>.js': ['.tmp/<%= yeoman.packageBaseName %>.js']
+                    '<%= yeoman.bowerComp %>/<%= yeoman.packageBaseName %>.js': ['.tmp/<%= yeoman.packageBaseName %>.js']
                 }
             }
         },
 
         uglify: {
             componentJsFiles: {
-                src: '<%= yeoman.dist %>/<%= yeoman.packageBaseName %>.js',
-                dest: '<%= yeoman.dist %>/<%= yeoman.packageBaseName %>.min.js'
+                src: '<%= yeoman.bowerComp %>/<%= yeoman.packageBaseName %>.js',
+                dest: '<%= yeoman.bowerComp %>/<%= yeoman.packageBaseName %>.min.js'
+            }
+        },
+
+        copy: {
+            bowerComponentsToGhPages: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/bower_components/',
+                src: '**/*',
+                dest: '<%= yeoman.ghPages %>/bower_components/'
+            },
+            minifiedComponentJsToGhPages: {
+                expand: true,
+                cwd: '<%= yeoman.bowerComp %>/',
+                src: '<%= yeoman.packageBaseName %>.js',
+                dest: '<%= yeoman.ghPages %>/bower_components/angular-ice/'
+            },
+            appToGhPages: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/',
+                src: 'app.*',
+                dest: '<%= yeoman.ghPages %>/'
+            },
+            examplesToGhPages: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/examples/',
+                src: '*',
+                dest: '<%= yeoman.ghPages %>/examples/'
             }
         }
     });
@@ -222,6 +250,7 @@ module.exports = function (grunt) {
         'dom_munger',
         'concat',
         'ngAnnotate',
-        'uglify'
+        'uglify',
+        'copy'
     ]);
 };
