@@ -168,8 +168,7 @@ module.exports = function (grunt) {
                 options: {
                     banner: '(function() {\n\'use strict\';\n',
                     footer: '\n})();',
-                    process: function(src, filepath) {
-                        //return src.replace(/'use strict';/g, '');
+                    process: function(src) {
                         return src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
                     }
                 },
@@ -205,7 +204,7 @@ module.exports = function (grunt) {
                 src: '**/*',
                 dest: '<%= yeoman.ghPages %>/bower_components/'
             },
-            minifiedComponentJsToGhPages: {
+            concatenatedComponentJsToGhPages: {
                 expand: true,
                 cwd: '<%= yeoman.bowerComp %>/',
                 src: '<%= yeoman.packageBaseName %>.js',
@@ -227,13 +226,12 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', [
-        'newer:jshint',
+        'jshint',
         'karma:unit'
     ]);
 
     grunt.registerTask('test', [
-        'jshint:all',
-        'jshint:test',
+        'jshint',
         'connect:test',
         'karma:unitAllBrowsers'
     ]);
