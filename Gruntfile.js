@@ -221,6 +221,15 @@ module.exports = function (grunt) {
                 cwd: '<%= yeoman.app %>/examples/',
                 src: '*',
                 dest: '<%= yeoman.ghPages %>/examples/'
+            },
+            testHelperToBowerComponent: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/components/icetest/',
+                src: 'ice-test-helper_test.js',
+                dest: '<%= yeoman.bowerComp %>/',
+                rename: function(dest) {
+                    return dest + '<%= yeoman.packageBaseName %>.testHelper.js';
+                }
             }
         }
     });

@@ -21,6 +21,7 @@ module.exports = function (config) {
             'bower_components/jquery/dist/jquery.js',
             'bower_components/angular/angular.js',
             'bower_components/angular-mocks/angular-mocks.js',
+            'components/icetest/ice-test-helper_test.js',
             'components/icecommon/ice-common.js',
             'components/icecommon/*.js',
             'components/iceforms/ice-forms.js',

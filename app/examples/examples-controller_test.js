@@ -5,20 +5,10 @@ describe('ExamplesCtrl:', function() {
     // load the controller's module
     beforeEach(module('angularIceApp'));
 
-    var $controller;
-    var $rootScope;
     var $scope;
 
-    beforeEach(inject(function(_$controller_, _$rootScope_) {
-        $controller = _$controller_;
-        $rootScope = _$rootScope_;
-    }));
-
     var createController = function() {
-        $scope = $rootScope.$new();
-        $controller('ExamplesCtrl', {
-            '$scope': $scope
-        });
+        $scope = iceTestHelper.createCtrlAndReturnItsScope('ExamplesCtrl');
     };
 
     describe('on init:', function() {
@@ -32,6 +22,7 @@ describe('ExamplesCtrl:', function() {
     });
 
     describe('after init:', function() {
+        beforeEach(createController);
 
     });
 
