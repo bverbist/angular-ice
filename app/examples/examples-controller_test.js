@@ -8,7 +8,7 @@ describe('ExamplesCtrl:', function() {
     var $scope;
 
     var createController = function() {
-        $scope = iceTestHelper.createCtrlAndReturnItsScope('ExamplesCtrl');
+        $scope = iceUnitTester.setupController('ExamplesCtrl').buildAndReturnItsScope();
     };
 
     describe('on init:', function() {

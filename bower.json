@@ -1,14 +1,15 @@
 {
-    "name": "angular-ice-code",
-    "version": "0.1.0",
-    "dependencies": {
-        "angular": "^1.3.2",
-        "json3": "^3.3.0",
-        "es5-shim": "^4.0.0",
-        "bootstrap": "^3.2.0"
-    },
-    "devDependencies": {
-        "angular-mocks": "~1.3.2"
-    },
-    "appPath": "app"
+  "name": "angular-ice-code",
+  "version": "0.1.0",
+  "dependencies": {
+    "angular": "^1.3.3",
+    "json3": "^3.3.0",
+    "es5-shim": "^4.0.0",
+    "bootstrap": "^3.2.0"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.3.3",
+    "angular-resource": "~1.3.3"
+  },
+  "appPath": "app"
 }

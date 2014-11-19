@@ -222,13 +222,22 @@ module.exports = function (grunt) {
                 src: '*',
                 dest: '<%= yeoman.ghPages %>/examples/'
             },
-            testHelperToBowerComponent: {
+            unitTesterToBowerComponent: {
                 expand: true,
                 cwd: '<%= yeoman.app %>/components/icetest/',
-                src: 'ice-test-helper_test.js',
+                src: 'ice-unit-tester_test.js',
                 dest: '<%= yeoman.bowerComp %>/',
                 rename: function(dest) {
-                    return dest + '<%= yeoman.packageBaseName %>.testHelper.js';
+                    return dest + '<%= yeoman.packageBaseName %>.unitTester.js';
+                }
+            },
+            protractorPagesToBowerComponent: {
+                expand: true,
+                cwd: '<%= yeoman.app %>/components/icetest/',
+                src: 'ice-base-page_e2e.js',
+                dest: '<%= yeoman.bowerComp %>/',
+                rename: function(dest) {
+                    return dest + '<%= yeoman.packageBaseName %>.protractorPages.js';
                 }
             }
         }
