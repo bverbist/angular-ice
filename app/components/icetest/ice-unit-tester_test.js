@@ -10,12 +10,12 @@ var iceUnitTester = (function() {
         return service;
     };
 
-    function ControllerBuilder(ctrlName) {
-        this.ctrlName = ctrlName;
+    function ControllerBuilder(controllerName) {
+        this.controllerName = controllerName;
         this.injectionLocals = {};
     }
 
-    ControllerBuilder.prototype.withInjected = function(key, value) {
+    ControllerBuilder.prototype.withMock = function(key, value) {
         this.injectionLocals[key] = value;
         return this;
     };
@@ -27,18 +27,57 @@ var iceUnitTester = (function() {
         var $scope = $rootScope.$new();
         this.injectionLocals.$scope = $scope;
 
-        $controller(this.ctrlName, this.injectionLocals);
+        $controller(this.controllerName, this.injectionLocals);
 
         return $scope;
     };
 
+    function ServiceBuilder(serviceName) {
+        this.moduleName = '';
+        this.serviceName = serviceName;
+        this.provideValues = [];
+    }
+
+    ServiceBuilder.prototype.ofModule = function(moduleName) {
+        this.moduleName = moduleName;
+        return this;
+    };
+
+    ServiceBuilder.prototype.withMock = function(injectKey, mock) {
+        this.provideValues.push({injectKey: injectKey, mock: mock});
+        return this;
+    };
+
+    ServiceBuilder.prototype.build = function() {
+        if (this.moduleName === '') {
+            throw 'moduleName not set';
+        }
+
+        var _this = this;
+        angular.mock.module(this.moduleName, function($provide) {
+            if (_this.provideValues.length > 0) {
+                _this.provideValues.forEach(function(provideVal) {
+                    $provide.value(provideVal.injectKey, provideVal.mock);
+                });
+            }
+        });
+
+        return injectService(this.serviceName);
+    };
+
     return {
         inject: injectService,
-        setupController: function(ctrlName) {
-            if (typeof ctrlName === 'undefined') {
+        setupController: function(controllerName) {
+            if (typeof controllerName === 'undefined') {
                 return undefined;
             }
-            return new ControllerBuilder(ctrlName);
+            return new ControllerBuilder(controllerName);
+        },
+        setupService: function(serviceName) {
+            if (typeof serviceName === 'undefined') {
+                return undefined;
+            }
+            return new ServiceBuilder(serviceName);
         }
     };
 })();
