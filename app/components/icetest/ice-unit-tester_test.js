@@ -38,7 +38,7 @@ var iceUnitTester = (function() {
         this.provideValues = [];
     }
 
-    ServiceBuilder.prototype.ofModule = function(moduleName) {
+    ServiceBuilder.prototype.andLoadModule = function(moduleName) {
         this.moduleName = moduleName;
         return this;
     };
@@ -65,6 +65,26 @@ var iceUnitTester = (function() {
         return injectService(this.serviceName);
     };
 
+    var getHttpPromiseMock = function(promiseCallBacker) {
+        return function() {
+            return {
+                success: function(functionOnSuccess) {
+                    promiseCallBacker.success = functionOnSuccess;
+
+                    return {
+                        error: function(functionOnError) {
+                            promiseCallBacker.error = functionOnError;
+                        }
+                    };
+                },
+                then: function(functionOnSuccess, functionOnError) {
+                    promiseCallBacker.success = functionOnSuccess;
+                    promiseCallBacker.error = functionOnError;
+                }
+            };
+        };
+    };
+
     return {
         inject: injectService,
         setupController: function(controllerName) {
@@ -78,6 +98,7 @@ var iceUnitTester = (function() {
                 return undefined;
             }
             return new ServiceBuilder(serviceName);
-        }
+        },
+        getHttpPromiseMock: getHttpPromiseMock
     };
 })();
