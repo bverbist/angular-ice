@@ -57,34 +57,6 @@ IceBasePage.prototype.clearElementAndFillInWith = function(element, content) {
     return this;
 };
 
-IceBasePage.prototype.expectElementPresentOf = function(selector) {
-    return expect(browser.isElementPresent(selector));
-};
-
-IceBasePage.prototype.expectDisplayedOf = function(element) {
-    return expect(element.isDisplayed());
-};
-
-IceBasePage.prototype.expectValueOf = function(elementOfTypeInput) {
-    return expect(elementOfTypeInput.getAttribute('value'));
-};
-
-IceBasePage.prototype.expectTextOf = function(elementNotOfTypeInput) {
-    return expect(elementNotOfTypeInput.getText());
-};
-
-IceBasePage.prototype.expectDisabledOf = function(element) {
-    return expect(element.getAttribute('disabled'));
-};
-
-IceBasePage.prototype.expectCheckedOf = function(element) {
-    return expect(element.getAttribute('checked'));
-};
-
-IceBasePage.prototype.expectClassOf = function(element) {
-    return expect(element.getAttribute('class'));
-};
-
 IceBasePage.prototype.getSelector = function(keyOrSelector) {
     var selector = keyOrSelector;
     if (typeof keyOrSelector === 'string') {
@@ -102,13 +74,17 @@ IceBasePage.prototype.getElement = function(keyOrElement) {
 };
 
 IceBasePage.prototype.verifyElementPresent = function(keyOrSelector, expectedBoolean) {
-    this.expectElementPresentOf(this.getSelector(keyOrSelector)).toBe(expectedBoolean);
+    expect(browser.isElementPresent(this.getSelector(keyOrSelector))).toBe(expectedBoolean);
     return this;
 };
 
 IceBasePage.prototype.verifyElementDisplayed = function(keyOrElement, expectedBoolean) {
-    this.expectDisplayedOf(this.getElement(keyOrElement)).toBe(expectedBoolean);
+    expect(this.getElement(keyOrElement).isDisplayed()).toBe(expectedBoolean);
     return this;
+};
+
+IceBasePage.prototype.expectValueOf = function(elementOfTypeInput) {
+    return expect(elementOfTypeInput.getAttribute('value'));
 };
 
 IceBasePage.prototype.verifyElementValueEquals = function(keyOrElementOfTypeInput, expected) {
@@ -119,6 +95,10 @@ IceBasePage.prototype.verifyElementValueEquals = function(keyOrElementOfTypeInpu
 IceBasePage.prototype.verifyElementValueMatches = function(keyOrElementOfTypeInput, expected) {
     this.expectValueOf(this.getElement(keyOrElementOfTypeInput)).toMatch(expected);
     return this;
+};
+
+IceBasePage.prototype.expectTextOf = function(elementNotOfTypeInput) {
+    return expect(elementNotOfTypeInput.getText());
 };
 
 IceBasePage.prototype.verifyElementTextEquals = function(keyOrElementNotOfTypeInput, expected) {
@@ -132,25 +112,27 @@ IceBasePage.prototype.verifyElementTextMatches = function(keyOrElementNotOfTypeI
 };
 
 IceBasePage.prototype.verifyElementDisabled = function(keyOrElement, expectedBoolean) {
+    var expectDisabled = expect(this.getElement(keyOrElement).getAttribute('disabled'));
     if (expectedBoolean) {
-        this.expectDisabledOf(this.getElement(keyOrElement)).toEqual('true');
+        expectDisabled.toEqual('true');
     } else {
-        this.expectDisabledOf(this.getElement(keyOrElement)).toBeNull();
+        expectDisabled.toBeNull();
     }
     return this;
 };
 
 IceBasePage.prototype.verifyElementChecked = function(keyOrElement, expectedBoolean) {
+    var expectChecked = expect(this.getElement(keyOrElement).getAttribute('checked'));
     if (expectedBoolean) {
-        this.expectCheckedOf(this.getElement(keyOrElement)).toEqual('true');
+        expectChecked.toEqual('true');
     } else {
-        this.expectCheckedOf(this.getElement(keyOrElement)).toBeNull();
+        expectChecked.toBeNull();
     }
     return this;
 };
 
 IceBasePage.prototype.verifyElementClassMatches = function(keyOrElement, expected) {
-    this.expectClassOf(this.getElement(keyOrElement)).toMatch(expected);
+    expect(this.getElement(keyOrElement).getAttribute('class')).toMatch(expected);
     return this;
 };
 
