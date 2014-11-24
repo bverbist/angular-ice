@@ -94,6 +94,39 @@ var iceUnitTester = (function() {
         return injectService(this.serviceName);
     };
 
+    function DirectiveBuilder(moduleName, elementHtml) {
+        this.moduleName = moduleName;
+        this.elementHtml = elementHtml;
+        this.scopeFields = [];
+    }
+
+    DirectiveBuilder.prototype.withScopeField = function(fieldName, fieldValue) {
+        this.scopeFields.push({name: fieldName, value: fieldValue});
+        return this;
+    };
+
+    DirectiveBuilder.prototype.load = function() {
+        angular.mock.module(this.moduleName);
+
+        var $compile = injectService('$compile');
+        var $rootScope = injectService('$rootScope');
+
+        var $scope = $rootScope.$new();
+        if (this.scopeFields.length > 0) {
+            this.scopeFields.forEach(function(scopeField) {
+                $scope[scopeField.name] = scopeField.value;
+            });
+        }
+
+        var element = $compile(this.elementHtml)($scope);
+        $scope.$digest();
+
+        return {
+            $scope: $scope,
+            element: element
+        };
+    };
+
     function UnitTestBuilder(moduleName) {
         this.moduleName = moduleName;
     }
@@ -110,6 +143,13 @@ var iceUnitTester = (function() {
             return undefined;
         }
         return new ServiceBuilder(this.moduleName, serviceName);
+    };
+
+    UnitTestBuilder.prototype.testDirective = function(elementHtml) {
+        if (typeof elementHtml === 'undefined') {
+            return undefined;
+        }
+        return new DirectiveBuilder(this.moduleName, elementHtml);
     };
 
     return {
