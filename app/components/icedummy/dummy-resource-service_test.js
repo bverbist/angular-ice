@@ -2,13 +2,11 @@
 
 describe('iceDummyResource:', function() {
 
-    // load the controller's module
-    beforeEach(module('ice.dummy'));
-
     var iceDummyResource, $httpBackend;
 
     beforeEach(function() {
-        iceDummyResource = iceUnitTester.inject('iceDummyResource');
+        iceDummyResource = iceUnitTester.module('ice.dummy').testService('iceDummyResource').load();
+
         $httpBackend = iceUnitTester.inject('$httpBackend');
     });
 

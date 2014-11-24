@@ -10,17 +10,55 @@ var iceUnitTester = (function() {
         return service;
     };
 
-    function ControllerBuilder(controllerName) {
+    var getPromiseMock = function(promiseCallBacker) {
+        return function() {
+            return {
+                then: function(successCallback, errorCallback, notifyCallback) {
+                    promiseCallBacker.success = successCallback;
+                    promiseCallBacker.error = errorCallback;
+                    promiseCallBacker.notify = notifyCallback;
+                },
+                catch: function(errorCallback) {
+                    promiseCallBacker.success = null;
+                    promiseCallBacker.error = errorCallback;
+                }
+            };
+        };
+    };
+
+    var getHttpPromiseMock = function(promiseCallBacker) {
+        var _this = this;
+        return function() {
+            var promiseMock = _this.getPromiseMock(promiseCallBacker)();
+
+            promiseMock.success = function(successCallback) {
+                promiseCallBacker.success = successCallback;
+
+                return {
+                    error: function(errorCallback) {
+                        promiseCallBacker.error = errorCallback;
+                    }
+                };
+            };
+
+            return promiseMock;
+        };
+    };
+
+    function ControllerBuilder(moduleName, controllerName) {
+        this.moduleName = moduleName;
         this.controllerName = controllerName;
         this.injectionLocals = {};
     }
 
-    ControllerBuilder.prototype.withMock = function(key, value) {
-        this.injectionLocals[key] = value;
+    ControllerBuilder.prototype.withMock = function(injectKey, mock) {
+        this.injectionLocals[injectKey] = mock;
         return this;
     };
 
-    ControllerBuilder.prototype.buildAndReturnItsScope = function() {
+    ControllerBuilder.prototype.loadAndReturnScope = function() {
+        angular.mock.module(this.moduleName);
+
         var $controller = injectService('$controller');
         var $rootScope = injectService('$rootScope');
 
@@ -32,27 +70,18 @@ var iceUnitTester = (function() {
         return $scope;
     };
 
-    function ServiceBuilder(serviceName) {
-        this.moduleName = '';
+    function ServiceBuilder(moduleName, serviceName) {
+        this.moduleName = moduleName;
         this.serviceName = serviceName;
         this.provideValues = [];
     }
-
-    ServiceBuilder.prototype.andLoadModule = function(moduleName) {
-        this.moduleName = moduleName;
-        return this;
-    };
 
     ServiceBuilder.prototype.withMock = function(injectKey, mock) {
         this.provideValues.push({injectKey: injectKey, mock: mock});
         return this;
     };
 
-    ServiceBuilder.prototype.build = function() {
-        if (this.moduleName === '') {
-            throw 'moduleName not set';
-        }
-
+    ServiceBuilder.prototype.load = function() {
         var _this = this;
         angular.mock.module(this.moduleName, function($provide) {
             if (_this.provideValues.length > 0) {
@@ -65,40 +94,33 @@ var iceUnitTester = (function() {
         return injectService(this.serviceName);
     };
 
-    var getHttpPromiseMock = function(promiseCallBacker) {
-        return function() {
-            return {
-                success: function(functionOnSuccess) {
-                    promiseCallBacker.success = functionOnSuccess;
+    function UnitTestBuilder(moduleName) {
+        this.moduleName = moduleName;
+    }
 
-                    return {
-                        error: function(functionOnError) {
-                            promiseCallBacker.error = functionOnError;
-                        }
-                    };
-                },
-                then: function(functionOnSuccess, functionOnError) {
-                    promiseCallBacker.success = functionOnSuccess;
-                    promiseCallBacker.error = functionOnError;
-                }
-            };
-        };
+    UnitTestBuilder.prototype.testController = function(controllerName) {
+        if (typeof controllerName === 'undefined') {
+            return undefined;
+        }
+        return new ControllerBuilder(this.moduleName, controllerName);
+    };
+
+    UnitTestBuilder.prototype.testService = function(serviceName) {
+        if (typeof serviceName === 'undefined') {
+            return undefined;
+        }
+        return new ServiceBuilder(this.moduleName, serviceName);
     };
 
     return {
         inject: injectService,
-        setupController: function(controllerName) {
-            if (typeof controllerName === 'undefined') {
+        getPromiseMock: getPromiseMock,
+        getHttpPromiseMock: getHttpPromiseMock,
+        module: function(moduleName) {
+            if (typeof moduleName === 'undefined') {
                 return undefined;
             }
-            return new ControllerBuilder(controllerName);
-        },
-        setupService: function(serviceName) {
-            if (typeof serviceName === 'undefined') {
-                return undefined;
-            }
-            return new ServiceBuilder(serviceName);
-        },
-        getHttpPromiseMock: getHttpPromiseMock
+            return new UnitTestBuilder(moduleName);
+        }
     };
 })();

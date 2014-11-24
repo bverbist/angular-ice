@@ -18,11 +18,11 @@ describe('iceDummy:', function() {
 
         beforeEach(function() {
             iceDummy = iceUnitTester
-                .setupService('iceDummy')
-                .andLoadModule('ice.dummy')
+                .module('ice.dummy')
+                .testService('iceDummy')
                 .withMock('iceDummyResource', iceDummyResourceMock)
                 .withMock('$log', logMock)
-                .build();
+                .load();
 
             spyOn(iceDummyResourceMock, 'getCurrentWeather').and.callThrough();
             spyOn(logMock, 'info').and.callThrough();
@@ -57,9 +57,9 @@ describe('iceDummy:', function() {
 
         beforeEach(function() {
             iceDummy = iceUnitTester
-                .setupService('iceDummy')
-                .andLoadModule('ice.dummy')
-                .build();
+                .module('ice.dummy')
+                .testService('iceDummy')
+                .load();
 
             iceDummyResource = iceUnitTester.inject('iceDummyResource');
             $log = iceUnitTester.inject('$log');

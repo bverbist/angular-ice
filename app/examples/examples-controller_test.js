@@ -2,13 +2,13 @@
 
 describe('ExamplesCtrl:', function() {
 
-    // load the controller's module
-    beforeEach(module('angularIceApp'));
-
     var $scope;
 
     var createController = function() {
-        $scope = iceUnitTester.setupController('ExamplesCtrl').buildAndReturnItsScope();
+        $scope = iceUnitTester
+            .module('angularIceApp')
+            .testController('ExamplesCtrl')
+            .loadAndReturnScope();
     };
 
     describe('on init:', function() {
