@@ -32,6 +32,22 @@ describe('iceAutoSelectContentOn directive:', function() {
         form = $scope.form;
     }
 
+    describe('General:', function() {
+        beforeEach(function () {
+            setup();
+        });
+
+        it('content is by default not selected', function() {
+            var isolateScope = element.find('input').isolateScope();
+            expect(isolateScope.isElementSelected).toBe(false);
+        });
+
+        it('content is not altered', function() {
+            form.modelName.$setViewValue('abc');
+            expect($scope.modelField).toEqual('abc');
+        });
+    });
+
     describe('IF default event:', function() {
         beforeEach(function () {
             setup();
@@ -40,11 +56,6 @@ describe('iceAutoSelectContentOn directive:', function() {
         it('no error if select and deselect events are not passed to the directive', function() {
             expect(element.html()).toContain(' ice-auto-select-content-on="" ');
             expect(element.html()).not.toContain('ice-deselect-event');
-        });
-
-        it('does not alter content', function() {
-            form.modelName.$setViewValue('abc');
-            expect($scope.modelField).toEqual('abc');
         });
     });
 
@@ -56,11 +67,6 @@ describe('iceAutoSelectContentOn directive:', function() {
         it('no error if select and deselect events are passed (overridden) to the directive', function() {
             expect(element.html()).toContain(' ice-auto-select-content-on="mouseover" ');
             expect(element.html()).toContain(' ice-deselect-event="mouseout" ');
-        });
-
-        it('does not alter content', function() {
-            form.modelName.$setViewValue('abc');
-            expect($scope.modelField).toEqual('abc');
         });
     });
 });
