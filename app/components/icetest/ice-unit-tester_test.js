@@ -48,11 +48,17 @@ var iceUnitTester = (function() {
     function ControllerScopeBuilder(moduleName, controllerName) {
         this.moduleName = moduleName;
         this.controllerName = controllerName;
+        this.parentScope = null;
         this.injectionLocals = {};
     }
 
     ControllerScopeBuilder.prototype.withMock = function(injectKey, mock) {
         this.injectionLocals[injectKey] = mock;
+        return this;
+    };
+
+    ControllerScopeBuilder.prototype.withParentScope = function(parentScopeObject) {
+        this.parentScope = parentScopeObject;
         return this;
     };
 
@@ -62,7 +68,14 @@ var iceUnitTester = (function() {
         var $controller = injectService('$controller');
         var $rootScope = injectService('$rootScope');
 
-        var $scope = $rootScope.$new();
+        var $scope;
+
+        if (this.parentScope === null) {
+            $scope = $rootScope.$new();
+        } else {
+            $scope = this.parentScope;
+        }
+
         this.injectionLocals.$scope = $scope;
 
         $controller(this.controllerName, this.injectionLocals);
