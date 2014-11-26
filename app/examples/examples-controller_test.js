@@ -4,7 +4,7 @@ describe('ExamplesCtrl:', function() {
 
     var $scope;
 
-    var createController = function() {
+    var buildController = function() {
         $scope = iceUnitTester
             .controllerScopeBuilder('angularIceApp', 'ExamplesCtrl')
             .build();
@@ -12,7 +12,7 @@ describe('ExamplesCtrl:', function() {
 
     describe('on init:', function() {
         it('some fields are put on the scope', function() {
-            createController();
+            buildController();
 
             expect($scope.model).toBeDefined();
             expect($scope.model.autoSelectDefault).toBeDefined();
@@ -21,7 +21,7 @@ describe('ExamplesCtrl:', function() {
     });
 
     describe('after init:', function() {
-        beforeEach(createController);
+        beforeEach(buildController);
 
     });
 

@@ -21,15 +21,20 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div class="container">
+    <div class="container" ng-controller="NavigationCtrl">
       <div class="header">
         <h1 class="text-muted">
-            <span class="text-blue">angular - ice</span> :
-            <span class="text-orange">examples</span>
+          <span class="text-blue">angular - ice</span> :
+          <span class="text-orange">examples</span>
         </h1>
+
+        <tabset>
+          <tab heading="Unit Tester" ng-click="goTo('/unitTester')"></tab>
+          <tab heading="Form directives" ng-click="goTo('/formDirectives')"></tab>
+        </tabset>
       </div>
 
-      <div ng-include="'examples/examples.html'" ng-controller="ExamplesCtrl"></div>
+      <div ng-view=""></div>
     </div>
 
     <!-- build:js(.) scripts/oldieshim.js -->
@@ -43,6 +48,7 @@
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
@@ -53,6 +59,7 @@
         <script src="components/iceforms/ice-forms.js"></script>
         <script src="components/iceforms/auto-select-content-on-directive.js"></script>
         <script src="app.js" data-concat="false"></script>
+        <script src="examples/navigation-controller.js" data-concat="false"></script>
         <script src="examples/examples-controller.js" data-concat="false"></script>
         <!-- endbuild -->
 </body>

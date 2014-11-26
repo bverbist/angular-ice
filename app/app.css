@@ -45,12 +45,28 @@
     padding-left: 20px;
 }
 
+#examples code .indent2 {
+    padding-left: 40px;
+}
+
+#examples code .indent3 {
+    padding-left: 60px;
+}
+
+#examples code .indent4 {
+    padding-left: 80px;
+}
+
 #examples code .ice {
     color: #FF8C00;
 }
 
 #examples code .optional {
     color: #008B8B;
+}
+
+#examples code .special {
+    color: #2E8B21;
 }
 
 #examples code .other {
