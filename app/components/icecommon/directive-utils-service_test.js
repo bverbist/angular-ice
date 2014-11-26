@@ -6,9 +6,9 @@ describe('iceDirectiveUtils:', function() {
 
     beforeEach(module('ice.common'));
 
-    beforeEach(inject(function(_iceDirectiveUtils_) {
-        iceDirectiveUtils = _iceDirectiveUtils_;
-    }));
+    beforeEach(function() {
+        iceDirectiveUtils = iceUnitTester.inject('iceDirectiveUtils');
+    });
 
     describe('getAttributeOrDefaultValue()', function() {
         var attributes = {

@@ -3,10 +3,10 @@
 describe('iceDummy:', function() {
 
     describe('test by using custom mock:', function() {
-        var promiseCallBacker = {};
+        var getCurrentWeatherCallBacker = {};
 
         var iceDummyResourceMock = {
-            getCurrentWeather: iceUnitTester.getHttpPromiseMock(promiseCallBacker)
+            getCurrentWeather: iceUnitTester.getHttpPromiseMock(getCurrentWeatherCallBacker)
         };
 
         var logMock = {
@@ -18,11 +18,10 @@ describe('iceDummy:', function() {
 
         beforeEach(function() {
             iceDummy = iceUnitTester
-                .module('ice.dummy')
-                .testService('iceDummy')
+                .serviceBuilder('ice.dummy', 'iceDummy')
                 .withMock('iceDummyResource', iceDummyResourceMock)
                 .withMock('$log', logMock)
-                .load();
+                .build();
 
             spyOn(iceDummyResourceMock, 'getCurrentWeather').and.callThrough();
             spyOn(logMock, 'info').and.callThrough();
@@ -34,7 +33,7 @@ describe('iceDummy:', function() {
 
             expect(iceDummyResourceMock.getCurrentWeather).toHaveBeenCalledWith('Leuven', 'be');
 
-            promiseCallBacker.success(validCurrentWeather);
+            getCurrentWeatherCallBacker.success(validCurrentWeather);
 
             expect(logMock.info).toHaveBeenCalledWith('current weather: 123');
         });
@@ -42,7 +41,7 @@ describe('iceDummy:', function() {
         it('logs error message on failure', function() {
             iceDummy.logCurrentWeather();
 
-            promiseCallBacker.error('backend down', 404);
+            getCurrentWeatherCallBacker.error('backend down', 404);
 
             expect(logMock.error).toHaveBeenCalledWith('getCurrentWeather failed - status: 404 - data: backend down');
         });
@@ -57,9 +56,8 @@ describe('iceDummy:', function() {
 
         beforeEach(function() {
             iceDummy = iceUnitTester
-                .module('ice.dummy')
-                .testService('iceDummy')
-                .load();
+                .serviceBuilder('ice.dummy', 'iceDummy')
+                .build();
 
             iceDummyResource = iceUnitTester.inject('iceDummyResource');
             $log = iceUnitTester.inject('$log');

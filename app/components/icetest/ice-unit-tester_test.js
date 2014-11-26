@@ -45,18 +45,18 @@ var iceUnitTester = (function() {
         };
     };
 
-    function ControllerBuilder(moduleName, controllerName) {
+    function ControllerScopeBuilder(moduleName, controllerName) {
         this.moduleName = moduleName;
         this.controllerName = controllerName;
         this.injectionLocals = {};
     }
 
-    ControllerBuilder.prototype.withMock = function(injectKey, mock) {
+    ControllerScopeBuilder.prototype.withMock = function(injectKey, mock) {
         this.injectionLocals[injectKey] = mock;
         return this;
     };
 
-    ControllerBuilder.prototype.loadAndReturnScope = function() {
+    ControllerScopeBuilder.prototype.build = function() {
         angular.mock.module(this.moduleName);
 
         var $controller = injectService('$controller');
@@ -81,7 +81,7 @@ var iceUnitTester = (function() {
         return this;
     };
 
-    ServiceBuilder.prototype.load = function() {
+    ServiceBuilder.prototype.build = function() {
         var _this = this;
         angular.mock.module(this.moduleName, function($provide) {
             if (_this.provideValues.length > 0) {
@@ -105,7 +105,7 @@ var iceUnitTester = (function() {
         return this;
     };
 
-    DirectiveBuilder.prototype.load = function() {
+    DirectiveBuilder.prototype.build = function() {
         angular.mock.module(this.moduleName);
 
         var $compile = injectService('$compile');
@@ -127,40 +127,36 @@ var iceUnitTester = (function() {
         };
     };
 
-    function UnitTestBuilder(moduleName) {
-        this.moduleName = moduleName;
-    }
-
-    UnitTestBuilder.prototype.testController = function(controllerName) {
-        if (typeof controllerName === 'undefined') {
-            return undefined;
-        }
-        return new ControllerBuilder(this.moduleName, controllerName);
-    };
-
-    UnitTestBuilder.prototype.testService = function(serviceName) {
-        if (typeof serviceName === 'undefined') {
-            return undefined;
-        }
-        return new ServiceBuilder(this.moduleName, serviceName);
-    };
-
-    UnitTestBuilder.prototype.testDirective = function(elementHtml) {
-        if (typeof elementHtml === 'undefined') {
-            return undefined;
-        }
-        return new DirectiveBuilder(this.moduleName, elementHtml);
-    };
-
     return {
         inject: injectService,
         getPromiseMock: getPromiseMock,
         getHttpPromiseMock: getHttpPromiseMock,
-        module: function(moduleName) {
+        controllerScopeBuilder: function(moduleName, controllerName) {
             if (typeof moduleName === 'undefined') {
                 return undefined;
             }
-            return new UnitTestBuilder(moduleName);
+            if (typeof controllerName === 'undefined') {
+                return undefined;
+            }
+            return new ControllerScopeBuilder(moduleName, controllerName);
+        },
+        serviceBuilder: function(moduleName, serviceName) {
+            if (typeof moduleName === 'undefined') {
+                return undefined;
+            }
+            if (typeof serviceName === 'undefined') {
+                return undefined;
+            }
+            return new ServiceBuilder(moduleName, serviceName);
+        },
+        directiveBuilder: function(moduleName, elementHtml) {
+            if (typeof moduleName === 'undefined') {
+                return undefined;
+            }
+            if (typeof elementHtml === 'undefined') {
+                return undefined;
+            }
+            return new DirectiveBuilder(moduleName, elementHtml);
         }
     };
 })();

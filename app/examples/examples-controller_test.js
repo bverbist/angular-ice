@@ -6,9 +6,8 @@ describe('ExamplesCtrl:', function() {
 
     var createController = function() {
         $scope = iceUnitTester
-            .module('angularIceApp')
-            .testController('ExamplesCtrl')
-            .loadAndReturnScope();
+            .controllerScopeBuilder('angularIceApp', 'ExamplesCtrl')
+            .build();
     };
 
     describe('on init:', function() {
