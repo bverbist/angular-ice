@@ -1,0 +1,154 @@
+<div id="examples">
+    <h3 class="text-blue">iceUnitTester</h3>
+
+    <p>Helper class to reduce boilerplate code when unit testing angular controllers, services, directives, etc.</p>
+
+
+    <h4>Available since</h4>
+
+    <p>0.2.0</p>
+
+    <h4>Installation</h4>
+
+    <p>
+        <li><strong>bower</strong></li>
+        bower install angular-ice --save
+        <br>&nbsp;&nbsp;&nbsp;&nbsp;(p.s. --save-dev if you only need the iceUnitTester)
+    </p>
+
+    <p>
+        <li>add file to your <strong>karma.conf.js</strong> file : after the angular modules, but before your own js files</li>
+        'bower_components/angular-ice/<strong>angular-ice.unitTester.js</strong>'
+    </p>
+
+    <p>
+        <li>when using e.g. jshint, add the following to your "globals" in your <strong>.jshintrc</strong> file (test scope):</li>
+        "iceUnitTester": false
+    </p>
+
+    <p>
+        <li>use the globally available (only in karma scope) var <strong>iceUnitTester</strong> in your test js files</li>
+        see below ...
+    </p>
+
+
+    <h4>Usage</h4>
+
+    <li><u>testing a <strong>controller</strong></u></li>
+
+    <p>p.s. Example when the 'building' of the controller under test ('YourCtrl') is <u>not</u> done in a beforeEach block, so that you can setup some mocking (spyOn) before the controller is initialised.</p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('YourCtrl:', function() {</span>
+            <span class="indent ice">var $scope;</span>
+            <span class="indent other"></span>
+            <span class="indent special">var buildController = function() {</span>
+            <span class="indent2 ice">$scope = iceUnitTester</span>
+            <span class="indent4 ice">.controllerScopeBuilder(</span><span class="special">'YourApp', 'YourCtrl'</span><span class="ice">)</span>
+            <span class="indent4 optional">[.withMock(&lt;injectKey&gt;, &lt;mock&gt;)]</span>
+            <span class="indent4 optional">[.withParentScope({...})]</span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent special">};</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('some scope test', function() {</span>
+            <span class="indent2 special">buildController();</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 other">expect($scope...).toBe(...);</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <li><u>testing a <strong>service</strong></u></li>
+
+    <p>p.s. Example when replacing a dependency (in this case the $log service) of the service under test ('yourService') with a mock/stub of your own.</p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('yourService:', function() {</span>
+            <span class="indent ice">var yourService;</span>
+            <span class="indent other"></span>
+            <span class="indent special">var logMock = {</span>
+            <span class="indent2 special">info: function() {},</span>
+            <span class="indent2 special">error: function() {}</span>
+            <span class="indent special">};</span>
+            <span class="indent other"></span>
+            <span class="indent special">beforeEach(function() {</span>
+            <span class="indent2 ice">yourService = iceUnitTester</span>
+            <span class="indent4 ice">.serviceBuilder(</span><span class="special">'ServiceModule', 'yourService'</span><span class="ice">)</span>
+            <span class="indent4 optional">[.withMock('$log', logMock)]</span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent special">};</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('test where the $log service is replaced with my own logMock object', function() {</span>
+            <span class="indent2 ice">yourService.</span><span class="other">callSomeMethod(...);</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 other">expect(...).toBe(...);</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <li><u>testing a <strong>directive</strong></u></li>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('yourDirective:', function() {</span>
+            <span class="indent ice">var $scope;</span>
+            <span class="indent ice">var element;</span>
+            <span class="indent other"></span>
+            <span class="indent special">beforeEach(function () {</span>
+            <span class="indent2 ice">var directiveTester = iceUnitTester</span>
+            <span class="indent4 ice">.directiveBuilder(</span><span class="special">'YourApp', 'HTML of element'</span><span class="ice">)</span>
+            <span class="indent4 optional">[.withScopeField('someFieldName', 'some initial value')]</span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent2 ice"></span>
+            <span class="indent2 ice">$scope = directiveTester.$scope;</span>
+            <span class="indent2 ice">element = directiveTester.element;</span>
+            <span class="indent special">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('some directive test', function() {</span>
+            <span class="indent2 special">element. ...</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <li><u>just injecting a <strong>service</strong></u></li>
+
+    <p>you can do</p>
+
+    <pre>
+        <code>
+            <span class="ice">var $httpBackend;</span>
+            <span class="other"></span>
+            <span class="special">beforeEach(function() {</span>
+            <span class="indent ice">$httpBackend = iceUnitTester.inject('$httpBackend');</span>
+            <span class="special">});</span>
+        </code>
+    </pre>
+
+    <p>instead of</p>
+
+    <pre>
+        <code>
+            <span class="ice">var $httpBackend;</span>
+            <span class="other"></span>
+            <span class="special">beforeEach(inject(function(_$httpBackend_) {</span>
+            <span class="indent ice">$httpBackend = _$httpBackend_;</span>
+            <span class="special">}));</span>
+        </code>
+    </pre>
+
+    <h4>Example(s)</h4>
+
+    <p>See some <strong>_test.js</strong> files in the <a href="https://github.com/bverbist/angular-ice" target="_blank">angular-ice github code</a></p>
+
+</div>

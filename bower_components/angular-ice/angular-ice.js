@@ -37,7 +37,7 @@ angular
             link: function (scope, element, attrs) {
                 var selectEvent = iceDirectiveUtils.getAttributeOrDefaultValue(attrs, 'iceAutoSelectContentOn', DEFAULT_SELECT_EVENT);
                 var deselectEvent = iceDirectiveUtils.getAttributeOrDefaultValue(attrs, 'iceDeselectEvent', DEFAULT_DESELECT_EVENT);
-                var isElementSelected = false;
+                scope.isElementSelected = false;
 
                 function selectElementWorksAlsoOnIOS(element, selectionStart, selectionEnd) {
                     if (element.setSelectionRange) {
@@ -46,15 +46,15 @@ angular
                 }
 
                 element.on(selectEvent, function() {
-                    if (!isElementSelected) {
+                    if (!scope.isElementSelected) {
                         this.select();
                         selectElementWorksAlsoOnIOS(this, SELECTION_RANGE_START, SELECTION_RANGE_END);
-                        isElementSelected = true;
+                        scope.isElementSelected = true;
                     }
                 });
 
                 element.on(deselectEvent, function() {
-                    isElementSelected = false;
+                    scope.isElementSelected = false;
                     selectElementWorksAlsoOnIOS(this, 0, 0);
                 });
             }

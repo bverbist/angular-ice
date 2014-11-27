@@ -18,15 +18,9 @@ module.exports = function (grunt) {
   var fs = require('fs');
   var path = require('path');
   var npmShrinkwrap = require('npm-shrinkwrap');
+  var generateGlyphiconsData = require('./grunt/bs-glyphicons-data-generator.js');
   var BsLessdocParser = require('./grunt/bs-lessdoc-parser.js');
-  var getLessVarsData = function () {
-    var filePath = path.join(__dirname, 'less/variables.less');
-    var fileContent = fs.readFileSync(filePath, { encoding: 'utf8' });
-    var parser = new BsLessdocParser(fileContent);
-    return { sections: parser.parseFile() };
-  };
   var generateRawFiles = require('./grunt/bs-raw-files-generator.js');
-  var generateCommonJSModule = require('./grunt/bs-commonjs-generator.js');
 
   // Project configuration.
   grunt.initConfig({
@@ -38,26 +32,12 @@ module.exports = function (grunt) {
             ' * Copyright 2011-<%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
             ' * Licensed under <%= pkg.license.type %> (<%= pkg.license.url %>)\n' +
             ' */\n',
-    // NOTE: This jqueryCheck/jqueryVersionCheck code is duplicated in customizer.js;
-    //       if making changes here, be sure to update the other copy too.
-    jqueryCheck: [
-      'if (typeof jQuery === \'undefined\') {',
-      '  throw new Error(\'Bootstrap\\\'s JavaScript requires jQuery\')',
-      '}\n'
-    ].join('\n'),
-    jqueryVersionCheck: [
-      '+function ($) {',
-      '  var version = $.fn.jquery.split(\' \')[0].split(\'.\')',
-      '  if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1)) {',
-      '    throw new Error(\'Bootstrap\\\'s JavaScript requires jQuery version 1.9.1 or higher\')',
-      '  }',
-      '}(jQuery);\n\n'
-    ].join('\n'),
+    // NOTE: This jqueryCheck code is duplicated in customizer.js; if making changes here, be sure to update the other copy too.
+    jqueryCheck: 'if (typeof jQuery === \'undefined\') { throw new Error(\'Bootstrap\\\'s JavaScript requires jQuery\') }\n\n',
 
     // Task configuration.
     clean: {
-      dist: 'dist',
-      docs: 'docs/dist'
+      dist: ['dist', 'docs/dist']
     },
 
     jshint: {
@@ -70,7 +50,7 @@ module.exports = function (grunt) {
         },
         src: ['Gruntfile.js', 'grunt/*.js']
       },
-      core: {
+      src: {
         src: 'js/*.js'
       },
       test: {
@@ -80,7 +60,7 @@ module.exports = function (grunt) {
         src: 'js/tests/unit/*.js'
       },
       assets: {
-        src: ['docs/assets/js/src/*.js', 'docs/assets/js/*.js', '!docs/assets/js/*.min.js']
+        src: ['docs/assets/js/_src/*.js', 'docs/assets/js/*.js', '!docs/assets/js/*.min.js']
       }
     },
 
@@ -91,8 +71,8 @@ module.exports = function (grunt) {
       grunt: {
         src: '<%= jshint.grunt.src %>'
       },
-      core: {
-        src: '<%= jshint.core.src %>'
+      src: {
+        src: '<%= jshint.src.src %>'
       },
       test: {
         src: '<%= jshint.test.src %>'
@@ -107,7 +87,7 @@ module.exports = function (grunt) {
 
     concat: {
       options: {
-        banner: '<%= banner %>\n<%= jqueryCheck %>\n<%= jqueryVersionCheck %>',
+        banner: '<%= banner %>\n<%= jqueryCheck %>',
         stripBanners: false
       },
       bootstrap: {
@@ -133,29 +113,27 @@ module.exports = function (grunt) {
       options: {
         preserveComments: 'some'
       },
-      core: {
+      bootstrap: {
         src: '<%= concat.bootstrap.dest %>',
         dest: 'dist/js/<%= pkg.name %>.min.js'
       },
       customize: {
-        // NOTE: This src list is duplicated in footer.html; if making changes here, be sure to update the other copy too.
         src: [
-          'docs/assets/js/vendor/less.min.js',
-          'docs/assets/js/vendor/jszip.min.js',
-          'docs/assets/js/vendor/uglify.min.js',
-          'docs/assets/js/vendor/Blob.js',
-          'docs/assets/js/vendor/FileSaver.js',
+          'docs/assets/js/_vendor/less.min.js',
+          'docs/assets/js/_vendor/jszip.min.js',
+          'docs/assets/js/_vendor/uglify.min.js',
+          'docs/assets/js/_vendor/blob.js',
+          'docs/assets/js/_vendor/filesaver.js',
           'docs/assets/js/raw-files.min.js',
-          'docs/assets/js/src/customizer.js'
+          'docs/assets/js/_src/customizer.js'
         ],
         dest: 'docs/assets/js/customize.min.js'
       },
       docsJs: {
-        // NOTE: This src list is duplicated in footer.html; if making changes here, be sure to update the other copy too.
         src: [
-          'docs/assets/js/vendor/holder.js',
-          'docs/assets/js/vendor/ZeroClipboard.min.js',
-          'docs/assets/js/src/application.js'
+          'docs/assets/js/_vendor/holder.js',
+          'docs/assets/js/_vendor/ZeroClipboard.min.js',
+          'docs/assets/js/_src/application.js'
         ],
         dest: 'docs/assets/js/docs.min.js'
       }
@@ -177,8 +155,9 @@ module.exports = function (grunt) {
           sourceMapURL: '<%= pkg.name %>.css.map',
           sourceMapFilename: 'dist/css/<%= pkg.name %>.css.map'
         },
-        src: 'less/bootstrap.less',
-        dest: 'dist/css/<%= pkg.name %>.css'
+        files: {
+          'dist/css/<%= pkg.name %>.css': 'less/bootstrap.less'
+        }
       },
       compileTheme: {
         options: {
@@ -188,8 +167,9 @@ module.exports = function (grunt) {
           sourceMapURL: '<%= pkg.name %>-theme.css.map',
           sourceMapFilename: 'dist/css/<%= pkg.name %>-theme.css.map'
         },
-        src: 'less/theme.less',
-        dest: 'dist/css/<%= pkg.name %>-theme.css'
+        files: {
+          'dist/css/<%= pkg.name %>-theme.css': 'less/theme.less'
+        }
       }
     },
 
@@ -219,7 +199,7 @@ module.exports = function (grunt) {
         src: 'dist/css/<%= pkg.name %>-theme.css'
       },
       docs: {
-        src: 'docs/assets/css/src/docs.css'
+        src: 'docs/assets/css/_src/docs.css'
       },
       examples: {
         expand: true,
@@ -233,7 +213,7 @@ module.exports = function (grunt) {
       options: {
         csslintrc: 'less/.csslintrc'
       },
-      dist: [
+      src: [
         'dist/css/bootstrap.css',
         'dist/css/bootstrap-theme.css'
       ],
@@ -245,7 +225,7 @@ module.exports = function (grunt) {
           ids: false,
           'overqualified-elements': false
         },
-        src: 'docs/assets/css/src/docs.css'
+        src: 'docs/assets/css/_src/docs.css'
       }
     },
 
@@ -255,18 +235,16 @@ module.exports = function (grunt) {
         keepSpecialComments: '*',
         noAdvanced: true
       },
-      minifyCore: {
-        src: 'dist/css/<%= pkg.name %>.css',
-        dest: 'dist/css/<%= pkg.name %>.min.css'
-      },
-      minifyTheme: {
-        src: 'dist/css/<%= pkg.name %>-theme.css',
-        dest: 'dist/css/<%= pkg.name %>-theme.min.css'
+      core: {
+        files: {
+          'dist/css/<%= pkg.name %>.min.css': 'dist/css/<%= pkg.name %>.css',
+          'dist/css/<%= pkg.name %>-theme.min.css': 'dist/css/<%= pkg.name %>-theme.css'
+        }
       },
       docs: {
         src: [
-          'docs/assets/css/src/docs.css',
-          'docs/assets/css/src/pygments-manni.css'
+          'docs/assets/css/_src/docs.css',
+          'docs/assets/css/_src/pygments-manni.css'
         ],
         dest: 'docs/assets/css/docs.min.css'
       }
@@ -299,19 +277,27 @@ module.exports = function (grunt) {
         dest: 'docs/examples/'
       },
       docs: {
-        src: 'docs/assets/css/src/docs.css',
-        dest: 'docs/assets/css/src/docs.css'
+        files: {
+          'docs/assets/css/_src/docs.css': 'docs/assets/css/_src/docs.css'
+        }
       }
     },
 
     copy: {
       fonts: {
+        expand: true,
         src: 'fonts/*',
         dest: 'dist/'
       },
       docs: {
-        src: 'dist/*/*',
-        dest: 'docs/'
+        expand: true,
+        cwd: './dist',
+        src: [
+          '{css,js}/*.min.*',
+          'css/*.map',
+          'fonts/*'
+        ],
+        dest: 'docs/dist'
       }
     },
 
@@ -329,17 +315,20 @@ module.exports = function (grunt) {
     },
 
     jade: {
-      options: {
-        pretty: true,
-        data: getLessVarsData
-      },
-      customizerVars: {
-        src: 'docs/_jade/customizer-variables.jade',
-        dest: 'docs/_includes/customizer-variables.html'
-      },
-      customizerNav: {
-        src: 'docs/_jade/customizer-nav.jade',
-        dest: 'docs/_includes/nav/customize.html'
+      compile: {
+        options: {
+          pretty: true,
+          data: function () {
+            var filePath = path.join(__dirname, 'less/variables.less');
+            var fileContent = fs.readFileSync(filePath, { encoding: 'utf8' });
+            var parser = new BsLessdocParser(fileContent);
+            return { sections: parser.parseFile() };
+          }
+        },
+        files: {
+          'docs/_includes/customizer-variables.html': 'docs/_jade/customizer-variables.jade',
+          'docs/_includes/nav/customize.html': 'docs/_jade/customizer-nav.jade'
+        }
       }
     },
 
@@ -351,9 +340,7 @@ module.exports = function (grunt) {
         reset: true,
         relaxerror: [
           'Bad value X-UA-Compatible for attribute http-equiv on element meta.',
-          'Element img is missing required attribute src.',
-          'Attribute autocomplete not allowed on element input at this point.',
-          'Attribute autocomplete not allowed on element button at this point.'
+          'Element img is missing required attribute src.'
         ]
       },
       files: {
@@ -363,15 +350,15 @@ module.exports = function (grunt) {
 
     watch: {
       src: {
-        files: '<%= jshint.core.src %>',
-        tasks: ['jshint:src', 'qunit', 'concat']
+        files: '<%= jshint.src.src %>',
+        tasks: ['jshint:src', 'qunit']
       },
       test: {
         files: '<%= jshint.test.src %>',
         tasks: ['jshint:test', 'qunit']
       },
       less: {
-        files: 'less/**/*.less',
+        files: 'less/*.less',
         tasks: 'less'
       }
     },
@@ -425,7 +412,7 @@ module.exports = function (grunt) {
   var testSubtasks = [];
   // Skip core tests if running a different subset of the test suite
   if (runSubset('core')) {
-    testSubtasks = testSubtasks.concat(['dist-css', 'dist-js', 'csslint:dist', 'test-js', 'docs']);
+    testSubtasks = testSubtasks.concat(['dist-css', 'csslint', 'jshint', 'jscs', 'qunit', 'build-customizer-html']);
   }
   // Skip HTML validation if running a different subset of the test suite
   if (runSubset('validate-html') &&
@@ -443,25 +430,29 @@ module.exports = function (grunt) {
     testSubtasks.push('saucelabs-qunit');
   }
   grunt.registerTask('test', testSubtasks);
-  grunt.registerTask('test-js', ['jshint:core', 'jshint:test', 'jshint:grunt', 'jscs:core', 'jscs:test', 'jscs:grunt', 'qunit']);
 
   // JS distribution task.
-  grunt.registerTask('dist-js', ['concat', 'uglify:core', 'commonjs']);
+  grunt.registerTask('dist-js', ['concat', 'uglify']);
 
   // CSS distribution task.
   grunt.registerTask('less-compile', ['less:compileCore', 'less:compileTheme']);
-  grunt.registerTask('dist-css', ['less-compile', 'autoprefixer:core', 'autoprefixer:theme', 'usebanner', 'csscomb:dist', 'cssmin:minifyCore', 'cssmin:minifyTheme']);
+  grunt.registerTask('dist-css', ['less-compile', 'autoprefixer', 'usebanner', 'csscomb', 'cssmin']);
+
+  // Docs distribution task.
+  grunt.registerTask('dist-docs', 'copy:docs');
 
   // Full distribution task.
-  grunt.registerTask('dist', ['clean:dist', 'dist-css', 'copy:fonts', 'dist-js']);
+  grunt.registerTask('dist', ['clean', 'dist-css', 'copy:fonts', 'dist-js', 'dist-docs']);
 
   // Default task.
-  grunt.registerTask('default', ['clean:dist', 'copy:fonts', 'test']);
+  grunt.registerTask('default', ['test', 'dist', 'build-glyphicons-data', 'build-customizer']);
 
   // Version numbering task.
   // grunt change-version-number --oldver=A.B.C --newver=X.Y.Z
   // This can be overzealous, so its changes should always be manually reviewed!
   grunt.registerTask('change-version-number', 'sed');
+
+  grunt.registerTask('build-glyphicons-data', function () { generateGlyphiconsData.call(this, grunt); });
 
   // task for building customizer
   grunt.registerTask('build-customizer', ['build-customizer-html', 'build-raw-files']);
@@ -471,19 +462,6 @@ module.exports = function (grunt) {
     generateRawFiles(grunt, banner);
   });
 
-  grunt.registerTask('commonjs', 'Generate CommonJS entrypoint module in dist dir.', function () {
-    var srcFiles = grunt.config.get('concat.bootstrap.src');
-    var destFilepath = 'dist/js/npm.js';
-    generateCommonJSModule(grunt, srcFiles, destFilepath);
-  });
-
-  // Docs task.
-  grunt.registerTask('docs-css', ['autoprefixer:docs', 'autoprefixer:examples', 'csscomb:docs', 'csscomb:examples', 'cssmin:docs']);
-  grunt.registerTask('lint-docs-css', ['csslint:docs', 'csslint:examples']);
-  grunt.registerTask('docs-js', ['uglify:docsJs', 'uglify:customize']);
-  grunt.registerTask('lint-docs-js', ['jshint:assets', 'jscs:assets']);
-  grunt.registerTask('docs', ['docs-css', 'lint-docs-css', 'docs-js', 'lint-docs-js', 'clean:docs', 'copy:docs', 'build-customizer']);
-
   // Task for updating the cached npm packages used by the Travis build (which are controlled by test-infra/npm-shrinkwrap.json).
   // This task should be run and the updated file should be committed whenever Bootstrap's dependencies change.
   grunt.registerTask('update-shrinkwrap', ['exec:npmUpdate', '_update-shrinkwrap']);
@@ -491,7 +469,7 @@ module.exports = function (grunt) {
     var done = this.async();
     npmShrinkwrap({ dev: true, dirname: __dirname }, function (err) {
       if (err) {
-        grunt.fail.warn(err);
+        grunt.fail.warn(err)
       }
       var dest = 'test-infra/npm-shrinkwrap.json';
       fs.renameSync('npm-shrinkwrap.json', dest);
