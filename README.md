@@ -1,6 +1,6 @@
 # angular-ice
 
-AngularJS input form directives
+AngularJS unit test helper, protractor base PageObject and input form directives
 
 ## Installation
 
@@ -12,7 +12,7 @@ bower install angular-ice
 
 p.s. --save-dev if you only need the iceUnitTester and/or the IceBasePage (not the directives, services, etc.)
 
-## Setup to use ice directives
+### setup to use ice directives
 
 Add a `<script>` to your `index.html`:
 
@@ -26,7 +26,7 @@ Then add `ice.forms` as a dependency for your app:
 angular.module('myApp', ['ice.forms']);
 ```
 
-## Setup to use the iceUnitTester
+### setup to use the iceUnitTester
 
 See [iceUnitTester - Installation](http://bverbist.github.io/angular-ice/#/unitTester)
 
