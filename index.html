@@ -14,22 +14,7 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <div class="container" ng-controller="NavigationCtrl">
-        <div class="header">
-            <h1 class="text-muted">
-                <span class="text-blue">angular - ice</span> :
-                <span class="text-orange">examples</span>
-            </h1>
-
-            <button type="button" class="btn btn-warning pull-right" onclick="window.open('https://github.com/bverbist/angular-ice','_blank');">Code on Github</button>
-
-            <tabset>
-                <tab heading="Unit Tester" ng-click="goTo('/unitTester')"></tab>
-                <tab heading="Form directives" ng-click="goTo('/formDirectives')"></tab>
-            </tabset>
-        </div>
-
-        <div ng-view=""></div>
+    <div id="appContent">
     </div>
 
     <!--[if lt IE 9]>
@@ -46,5 +31,9 @@
     <script src="app.js" data-concat="false"></script>
     <script src="examples/navigation-controller.js"></script>
     <script src="examples/examples-controller.js"></script>
+
+    <script>
+        $('#appContent').load('./app.html');
+    </script>
 </body>
 </html>

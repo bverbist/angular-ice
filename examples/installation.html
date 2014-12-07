@@ -1,0 +1,66 @@
+<div id="examples">
+    <h3 class="text-blue">Installation</h3>
+
+    <h4>bower</h4>
+
+    <pre>
+        <code>
+            <span class="ice">bower install angular-ice</span><span class="optional"> [--save-dev]</span>
+        </code>
+    </pre>
+
+    <p>
+        --save if you want to use some of the directives, services, etc.<br/>
+        --save-dev if you only need the iceUnitTester and/or the IceBasePage
+    </p>
+
+    <h3 class="text-blue">Setup to use some ice directives, services, ...</h3>
+
+    <p>
+        <li>Add the following &lt;script&gt; to your index.html</li>
+    </p>
+
+    <pre>
+        <code>
+            <span class="ice">&lt;script src="bower_components/angular-ice/angular-ice.js"&gt;&lt;/script&gt;</span>
+        </code>
+    </pre>
+
+    <p>
+        <li>Then add 'ice.forms' as a dependency for your app</li>
+    </p>
+
+    <pre>
+        <code>
+            <span class="ice">angular.module('</span><span class="special">myApp</span><span class="ice">', ['ice.forms']);</span>
+        </code>
+    </pre>
+
+    <h3 class="text-blue">Setup to use the iceUnitTester</h3>
+
+    <p>
+        <li>add the following file to your <strong>karma.conf.js</strong> files array (after the angular modules, but before your own js files):</li>
+    </p>
+
+    <pre>
+        <code>
+            <span class="ice">'bower_components/angular-ice/angular-ice.unitTester.js'</span>
+        </code>
+    </pre>
+
+    <p>
+        <li>when using e.g. jshint, add the following to your "globals" in your <strong>.jshintrc</strong> file (test scope):</li>
+    </p>
+
+    <pre>
+        <code>
+            <span class="ice">"iceUnitTester": false</span>
+        </code>
+    </pre>
+
+    <p>
+        <li>now you can use the globally available (only in karma scope) var <strong>iceUnitTester</strong> in your test js files</li>
+        see examples ...
+    </p>
+
+</div>

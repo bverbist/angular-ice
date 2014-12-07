@@ -8,30 +8,6 @@
 
     <p>0.2.0</p>
 
-    <h4>Installation</h4>
-
-    <p>
-        <li><strong>bower</strong></li>
-        bower install angular-ice --save
-        <br>&nbsp;&nbsp;&nbsp;&nbsp;(p.s. --save-dev if you only need the iceUnitTester)
-    </p>
-
-    <p>
-        <li>add file to your <strong>karma.conf.js</strong> file : after the angular modules, but before your own js files</li>
-        'bower_components/angular-ice/<strong>angular-ice.unitTester.js</strong>'
-    </p>
-
-    <p>
-        <li>when using e.g. jshint, add the following to your "globals" in your <strong>.jshintrc</strong> file (test scope):</li>
-        "iceUnitTester": false
-    </p>
-
-    <p>
-        <li>use the globally available (only in karma scope) var <strong>iceUnitTester</strong> in your test js files</li>
-        see below ...
-    </p>
-
-
     <h4>Usage</h4>
 
     <li><u>testing a <strong>controller</strong></u></li>
