@@ -8,6 +8,10 @@ angular
     ])
     .config(function($routeProvider) {
         $routeProvider
+            .when('/installation', {
+                templateUrl: 'examples/installation.html',
+                controller: 'ExamplesCtrl'
+            })
             .when('/unitTester', {
                 templateUrl: 'examples/unitTester.html',
                 controller: 'ExamplesCtrl'
@@ -17,6 +21,6 @@ angular
                 controller: 'ExamplesCtrl'
             })
             .otherwise({
-                redirectTo: '/unitTester'
+                redirectTo: '/installation'
             });
     });
