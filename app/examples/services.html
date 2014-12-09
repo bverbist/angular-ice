@@ -1,0 +1,35 @@
+<div id="examples">
+    <h3 class="text-blue">iceCaret</h3>
+
+    <h4>Service Info</h4>
+
+    <p>To set the caret (cursor) position of a DOM element. This service is best used from a directive.<br/>
+        The 'setPosition()' code was almost entirely taken from <a href="http://stackoverflow.com/questions/512528/set-cursor-position-in-html-textbox" target="_blank">here</a> (thanks again stackoverflow!).
+    </p>
+
+    <h4>Available since</h4>
+
+    <p>0.3.0</p>
+
+    <h4>Usage</h4>
+
+    <pre>
+        <code>
+            <span class="other">angular</span>
+            <span class="indent other">.module(<span class="special">'myModule'</span>)</span>
+            <span class="indent other">.directive(<span class="special">'myDirective'</span>, function(<span class="ice">iceCaret</span>) {</span>
+            <span class="indent2 other">return {</span>
+            <span class="indent3 other">restrict: 'A',</span>
+            <span class="indent3 other">link: function(scope, <span class="special">element</span>, attrs) {</span>
+            <span class="indent4 other">...</span>
+            <span class="indent4 optional">var integerTargetPosition = ...</span>
+            <span class="indent4 ice">iceCaret.setPosition(<span class="special">element[0]</span>, <span class="optional">integerTargetPosition</span>);</span>
+            <span class="indent4 other">...</span>
+            <span class="indent4 ice">iceCaret.setPositionToEnd(<span class="special">element[0]</span>);</span>
+            <span class="indent4 other">...</span>
+            <span class="indent3 other">}</span>
+            <span class="indent2 other">};</span>
+            <span class="indent other">});</span>
+        </code>
+    </pre>
+</div>

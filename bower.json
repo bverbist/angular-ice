@@ -1,6 +1,6 @@
 {
   "name": "angular-ice-code",
-  "version": "0.2.0",
+  "version": "0.0.0",
   "dependencies": {
     "angular": "1.2.26",
     "angular-route": "1.2.26",
