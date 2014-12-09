@@ -20,6 +20,10 @@ angular
                 templateUrl: 'examples/formDirectives.html',
                 controller: 'ExamplesCtrl'
             })
+            .when('/services', {
+                templateUrl: 'examples/services.html',
+                controller: 'ExamplesCtrl'
+            })
             .otherwise({
                 redirectTo: '/installation'
             });

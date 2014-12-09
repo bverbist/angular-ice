@@ -123,7 +123,85 @@
         </code>
     </pre>
 
-    <h4>Example(s)</h4>
+    <li><u>mocking a <strong>promise</strong></u></li>
+
+    <p>Need to test code that behaves differently based on a promise? With the 'get[...]PromiseMock' functions you can mock a promise and simulate its success- or error callback.<br/>
+    </p>
+
+    <p><strong>getPromiseMock(</strong>callbackObject<strong>)</strong> supports following promise methods:</p>
+
+    <pre>
+        <code>
+            <span class="special">.then(successCallback, errorCallback, notifyCallback)</span>
+            <span class="other"></span>
+            <span class="special">.catch(errorCallback)</span>
+        </code>
+    </pre>
+
+    <p><strong>getHttpPromiseMock(</strong>callbackObject<strong>)</strong> - specifically made to mock an angular $http call - supports following promise methods:</p>
+
+    <pre>
+        <code>
+            <span class="special">.then(successCallback, errorCallback, notifyCallback)</span>
+            <span class="other"></span>
+            <span class="special">.catch(errorCallback)</span>
+            <span class="other"></span>
+            <span class="special">.success(successCallback)</span>
+            <span class="indent special">.error(errorCallback)</span>
+        </code>
+    </pre>
+
+    <p>the callback functions are stored in the input <strong>callbackObject</strong>:</p>
+
+    <pre>
+        <code>
+            <span class="special">callbackObject</span><span class="ice">.success</span>
+            <span class="special">callbackObject</span><span class="ice">.error</span>
+            <span class="special">callbackObject</span><span class="ice">.notify</span>
+        </code>
+    </pre>
+
+    <p><strong>Example</strong> where 'myService.myMethod()' behaves differently based on the promise returned by the 'getSomething' method of 'anotherService'.</p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('myService:', function() {</span>
+            <span class="indent special">var myService;</span>
+            <span class="indent ice">var getSomethingCallBacker = {};</span><span class="indent special">// success and error callbacks will be stored in this object</span>
+            <span class="indent other"></span>
+            <span class="indent special">var anotherServiceMock = {</span>
+            <span class="indent2 special">getSomething: </span><span class="ice">iceUnitTester.getHttpPromiseMock(getSomethingCallBacker)</span>
+            <span class="indent special">};</span>
+            <span class="indent other"></span>
+            <span class="indent other">beforeEach(function() {</span>
+            <span class="indent2 special">myService = iceUnitTester</span>
+            <span class="indent4 special">.serviceBuilder(</span><span class="special">'ServiceModule', 'myService'</span><span class="special">)</span>
+            <span class="indent4 ice">.withMock('anotherService', anotherServiceMock)</span><span class="indent special">// replace the service dependency with the promise mock</span>
+            <span class="indent4 special">.build();</span>
+            <span class="indent other">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('test when anotherService.getSomething() runs successfully', function() {</span>
+            <span class="indent2 special">myService.myMethod();</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 ice">getSomethingCallBacker.success({something: 'some value'});</span><span class="indent special">// simulate promise success (pass success data)</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 other">expect(...).toBe(...);</span>
+            <span class="indent other">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('test when anotherService.getSomething() fails', function() {</span>
+            <span class="indent2 special">myService.myMethod();</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 ice">getSomethingCallBacker.error('service is down', 404);</span><span class="indent special">// simulate promise error</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 other">expect(...).toBe(...);</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <h4>Live example(s)</h4>
 
     <p>See some <strong>_test.js</strong> files in the <a href="https://github.com/bverbist/angular-ice" target="_blank">angular-ice github code</a></p>
 
