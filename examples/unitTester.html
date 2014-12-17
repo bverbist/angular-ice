@@ -12,7 +12,7 @@
 
     <li><u>testing a <strong>controller</strong></u></li>
 
-    <p>p.s. Example when the 'building' of the controller under test ('YourCtrl') is <u>not</u> done in a beforeEach block, so that you can setup some mocking (spyOn) before the controller is initialised.</p>
+    <p>p.s. Example when the 'building' of the controller under test ('YourCtrl') is <u>not</u> done in a beforeEach block, so that you can setup some mocking before the controller is initialised.</p>
 
     <pre>
         <code>
@@ -26,6 +26,7 @@
             <span class="indent4 ice">.controllerScopeBuilder(</span><span class="special">'YourApp', 'YourCtrl'</span><span class="ice">)</span>
             <span class="indent4 optional">[.withMock(&lt;injectKey&gt;, &lt;mock&gt;)]</span>
             <span class="indent4 optional">[.withParentScope({...})]</span>
+            <span class="indent4 optional">[.skipModuleLoad()]</span><span class="indent special">// if you loaded the module already (e.g. to setup mocking)</span>
             <span class="indent4 ice">.build();</span>
             <span class="indent special">};</span>
             <span class="indent other"></span>

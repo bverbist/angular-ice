@@ -7,5 +7,9 @@ angular.module('angularIceApp')
                 autoSelectDefault: 'some text',
                 autoSelectOtherEvent: 'other text'
             };
+
+            $scope.helloWorld = function() {
+                return 'Hello ICE !';
+            };
 		}
     );

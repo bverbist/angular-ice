@@ -4,13 +4,18 @@ describe('ExamplesCtrl:', function() {
 
     var $scope;
 
-    var buildController = function() {
-        $scope = iceUnitTester
-            .controllerScopeBuilder('angularIceApp', 'ExamplesCtrl')
-            .build();
-    };
-
     describe('on init:', function() {
+        beforeEach(function() {
+            angular.mock.module('angularIceApp');
+        });
+
+        var buildController = function() {
+            $scope = iceUnitTester
+                .controllerScopeBuilder('angularIceApp', 'ExamplesCtrl')
+                .skipModuleLoad()
+                .build();
+        };
+
         it('some fields are put on the scope', function() {
             buildController();
 
@@ -21,8 +26,17 @@ describe('ExamplesCtrl:', function() {
     });
 
     describe('after init:', function() {
-        beforeEach(buildController);
+        beforeEach(function() {
+            $scope = iceUnitTester
+                .controllerScopeBuilder('angularIceApp', 'ExamplesCtrl')
+                .build();
+        });
 
+        it('helloWorld() returns some dummy text', function() {
+            var actual = $scope.helloWorld();
+
+            expect(actual).toBe('Hello ICE !');
+        });
     });
 
 });
