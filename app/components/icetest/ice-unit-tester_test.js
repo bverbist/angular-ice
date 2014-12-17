@@ -50,6 +50,7 @@ var iceUnitTester = (function() {
         this.controllerName = controllerName;
         this.parentScope = null;
         this.injectionLocals = {};
+        this.loadModule = true;
     }
 
     ControllerScopeBuilder.prototype.withMock = function(injectKey, mock) {
@@ -62,8 +63,15 @@ var iceUnitTester = (function() {
         return this;
     };
 
+    ControllerScopeBuilder.prototype.skipModuleLoad = function() {
+        this.loadModule = false;
+        return this;
+    };
+
     ControllerScopeBuilder.prototype.build = function() {
-        angular.mock.module(this.moduleName);
+        if (this.loadModule === true) {
+            angular.mock.module(this.moduleName);
+        }
 
         var $controller = injectService('$controller');
         var $rootScope = injectService('$rootScope');
