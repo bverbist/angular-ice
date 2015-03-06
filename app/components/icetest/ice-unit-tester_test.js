@@ -148,11 +148,8 @@ var iceUnit = (function() {
         };
     };
 
-    return {
-        inject: injectService,
-        getPromiseMock: getPromiseMock,
-        getHttpPromiseMock: getHttpPromiseMock,
-        controllerScopeBuilder: function(moduleName, controllerName) {
+    var builder = {
+        controllerScope: function(moduleName, controllerName) {
             if (typeof moduleName === 'undefined') {
                 return undefined;
             }
@@ -161,7 +158,7 @@ var iceUnit = (function() {
             }
             return new ControllerScopeBuilder(moduleName, controllerName);
         },
-        serviceBuilder: function(moduleName, serviceName) {
+        service: function(moduleName, serviceName) {
             if (typeof moduleName === 'undefined') {
                 return undefined;
             }
@@ -170,7 +167,7 @@ var iceUnit = (function() {
             }
             return new ServiceBuilder(moduleName, serviceName);
         },
-        directiveBuilder: function(moduleName, elementHtml) {
+        directive: function(moduleName, elementHtml) {
             if (typeof moduleName === 'undefined') {
                 return undefined;
             }
@@ -179,5 +176,12 @@ var iceUnit = (function() {
             }
             return new DirectiveBuilder(moduleName, elementHtml);
         }
+    };
+
+    return {
+        inject: injectService,
+        getPromiseMock: getPromiseMock,
+        getHttpPromiseMock: getHttpPromiseMock,
+        builder: builder
     };
 })();

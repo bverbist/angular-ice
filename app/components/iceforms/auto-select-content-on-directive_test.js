@@ -20,8 +20,8 @@ describe('iceAutoSelectContentOn directive:', function() {
     }
 
     function setup(selectEvent, deselectEvent) {
-        var directiveTester = iceUnit
-            .directiveBuilder('angularIceApp', getElementHtml(selectEvent, deselectEvent))
+        var directiveTester = iceUnit.builder
+            .directive('angularIceApp', getElementHtml(selectEvent, deselectEvent))
             .withScopeField('modelField', '')
             .build();
 

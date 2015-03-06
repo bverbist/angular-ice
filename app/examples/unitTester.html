@@ -22,8 +22,8 @@
             <span class="indent ice">var $scope;</span>
             <span class="indent other"></span>
             <span class="indent special">var buildController = function() {</span>
-            <span class="indent2 ice">$scope = iceUnit</span>
-            <span class="indent4 ice">.controllerScopeBuilder(</span><span class="special">'YourApp', 'YourCtrl'</span><span class="ice">)</span>
+            <span class="indent2 ice">$scope = iceUnit.builder</span>
+            <span class="indent4 ice">.controllerScope(</span><span class="special">'YourApp', 'YourCtrl'</span><span class="ice">)</span>
             <span class="indent4 optional">[.withMock(&lt;injectKey&gt;, &lt;mock&gt;)]</span>
             <span class="indent4 optional">[.withParentScope({...})]</span>
             <span class="indent4 optional">[.skipModuleLoad()]</span><span class="indent special">// if you loaded the module already (e.g. to setup mocking)</span>
@@ -56,8 +56,8 @@
             <span class="indent special">};</span>
             <span class="indent other"></span>
             <span class="indent special">beforeEach(function() {</span>
-            <span class="indent2 ice">yourService = iceUnit</span>
-            <span class="indent4 ice">.serviceBuilder(</span><span class="special">'ServiceModule', 'yourService'</span><span class="ice">)</span>
+            <span class="indent2 ice">yourService = iceUnit.builder</span>
+            <span class="indent4 ice">.service(</span><span class="special">'ServiceModule', 'yourService'</span><span class="ice">)</span>
             <span class="indent4 optional">[.withMock('$log', logMock)]</span>
             <span class="indent4 ice">.build();</span>
             <span class="indent special">});</span>
@@ -82,8 +82,8 @@
             <span class="indent ice">var element;</span>
             <span class="indent other"></span>
             <span class="indent special">beforeEach(function () {</span>
-            <span class="indent2 ice">var directiveTester = iceUnit</span>
-            <span class="indent4 ice">.directiveBuilder(</span><span class="special">'YourApp', 'HTML of element'</span><span class="ice">)</span>
+            <span class="indent2 ice">var directiveTester = iceUnit.builder</span>
+            <span class="indent4 ice">.directive(</span><span class="special">'YourApp', 'HTML of element'</span><span class="ice">)</span>
             <span class="indent4 optional">[.withScopeField('someFieldName', 'some initial value')]</span>
             <span class="indent4 ice">.build();</span>
             <span class="indent2 ice"></span>
@@ -177,8 +177,8 @@
             <span class="indent special">};</span>
             <span class="indent other"></span>
             <span class="indent other">beforeEach(function() {</span>
-            <span class="indent2 special">myService = iceUnit</span>
-            <span class="indent4 special">.serviceBuilder(</span><span class="special">'ServiceModule', 'myService'</span><span class="special">)</span>
+            <span class="indent2 special">myService = iceUnit.builder</span>
+            <span class="indent4 special">.service(</span><span class="special">'ServiceModule', 'myService'</span><span class="special">)</span>
             <span class="indent4 ice">.withMock('anotherService', anotherServiceMock)</span><span class="indent special">// replace the service dependency with the promise mock</span>
             <span class="indent4 special">.build();</span>
             <span class="indent other">});</span>

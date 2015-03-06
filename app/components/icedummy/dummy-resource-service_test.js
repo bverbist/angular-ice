@@ -5,7 +5,8 @@ describe('iceDummyResource:', function() {
     var iceDummyResource, $httpBackend;
 
     beforeEach(function() {
-        iceDummyResource = iceUnit.serviceBuilder('ice.dummy', 'iceDummyResource').build();
+        iceDummyResource = iceUnit.builder
+            .service('ice.dummy', 'iceDummyResource').build();
 
         $httpBackend = iceUnit.inject('$httpBackend');
     });

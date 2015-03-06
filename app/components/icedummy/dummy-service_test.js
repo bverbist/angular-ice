@@ -17,8 +17,8 @@ describe('iceDummy:', function() {
         var iceDummy;
 
         beforeEach(function() {
-            iceDummy = iceUnit
-                .serviceBuilder('ice.dummy', 'iceDummy')
+            iceDummy = iceUnit.builder
+                .service('ice.dummy', 'iceDummy')
                 .withMock('iceDummyResource', iceDummyResourceMock)
                 .withMock('$log', logMock)
                 .build();
@@ -55,8 +55,8 @@ describe('iceDummy:', function() {
         var iceDummy;
 
         beforeEach(function() {
-            iceDummy = iceUnit
-                .serviceBuilder('ice.dummy', 'iceDummy')
+            iceDummy = iceUnit.builder
+                .service('ice.dummy', 'iceDummy')
                 .build();
 
             iceDummyResource = iceUnit.inject('iceDummyResource');

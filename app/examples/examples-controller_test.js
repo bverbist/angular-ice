@@ -10,8 +10,8 @@ describe('ExamplesCtrl:', function() {
         });
 
         var buildController = function() {
-            $scope = iceUnit
-                .controllerScopeBuilder('angularIceApp', 'ExamplesCtrl')
+            $scope = iceUnit.builder
+                .controllerScope('angularIceApp', 'ExamplesCtrl')
                 .skipModuleLoad()
                 .build();
         };
@@ -27,8 +27,8 @@ describe('ExamplesCtrl:', function() {
 
     describe('after init:', function() {
         beforeEach(function() {
-            $scope = iceUnit
-                .controllerScopeBuilder('angularIceApp', 'ExamplesCtrl')
+            $scope = iceUnit.builder
+                .controllerScope('angularIceApp', 'ExamplesCtrl')
                 .build();
         });
 

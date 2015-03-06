@@ -6,8 +6,8 @@ describe('iceStorage:', function() {
     var $window;
 
     beforeEach(function() {
-        iceStorage = iceUnit
-            .serviceBuilder('ice.common', 'iceStorage')
+        iceStorage = iceUnit.builder
+            .service('ice.common', 'iceStorage')
             .build();
 
         $window = iceUnit.inject('$window');
