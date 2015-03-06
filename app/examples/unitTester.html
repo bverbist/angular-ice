@@ -154,10 +154,10 @@
 
     <li><u>mocking a <strong>promise</strong></u></li>
 
-    <p>Need to test code that behaves differently based on a promise? With the 'get[...]PromiseMock' functions you can mock a promise and simulate its success- or error callback.<br/>
+    <p>Need to test code that behaves differently based on a promise? With the 'iceUnit.mock.[...]' functions you can mock a promise and simulate its success- or error callback.<br/>
     </p>
 
-    <p><strong>getPromiseMock(</strong>callbackObject<strong>)</strong> supports following promise methods:</p>
+    <p><strong>iceUnit.mock.promise(</strong>callbackObject<strong>)</strong> supports following promise methods:</p>
 
     <pre>
         <code>
@@ -167,7 +167,7 @@
         </code>
     </pre>
 
-    <p><strong>getHttpPromiseMock(</strong>callbackObject<strong>)</strong> - specifically made to mock an angular $http call - supports following promise methods:</p>
+    <p><strong>iceUnit.mock.$http(</strong>callbackObject<strong>)</strong> - specifically made to mock an angular $http call - supports following promise methods:</p>
 
     <pre>
         <code>
@@ -201,7 +201,7 @@
             <span class="indent ice">var getSomethingCallBacker = {};</span><span class="indent special">// success and error callbacks will be stored in this object</span>
             <span class="indent other"></span>
             <span class="indent special">var anotherServiceMock = {</span>
-            <span class="indent2 special">getSomething: </span><span class="ice">iceUnit.getHttpPromiseMock(getSomethingCallBacker)</span>
+            <span class="indent2 special">getSomething: </span><span class="ice">iceUnit.mock.$http(getSomethingCallBacker)</span>
             <span class="indent special">};</span>
             <span class="indent other"></span>
             <span class="indent other">beforeEach(function() {</span>

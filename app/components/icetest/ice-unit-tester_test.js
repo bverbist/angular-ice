@@ -27,9 +27,8 @@ var iceUnit = (function() {
     };
 
     var getHttpPromiseMock = function(promiseCallBacker) {
-        var _this = this;
         return function() {
-            var promiseMock = _this.getPromiseMock(promiseCallBacker)();
+            var promiseMock = getPromiseMock(promiseCallBacker)();
 
             promiseMock.success = function(successCallback) {
                 promiseCallBacker.success = successCallback;
@@ -43,6 +42,11 @@ var iceUnit = (function() {
 
             return promiseMock;
         };
+    };
+
+    var mock = {
+        promise: getPromiseMock,
+        $http: getHttpPromiseMock
     };
 
     function ControllerScopeBuilder(moduleName, controllerName) {
@@ -188,8 +192,7 @@ var iceUnit = (function() {
 
     return {
         inject: injectService,
-        getPromiseMock: getPromiseMock,
-        getHttpPromiseMock: getHttpPromiseMock,
+        mock: mock,
         builder: builder
     };
 })();

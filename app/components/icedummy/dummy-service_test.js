@@ -6,7 +6,7 @@ describe('iceDummy:', function() {
         var getCurrentWeatherCallBacker = {};
 
         var iceDummyResourceMock = {
-            getCurrentWeather: iceUnit.getHttpPromiseMock(getCurrentWeatherCallBacker)
+            getCurrentWeather: iceUnit.mock.$http(getCurrentWeatherCallBacker)
         };
 
         var iceDummy;
@@ -63,7 +63,7 @@ describe('iceDummy:', function() {
                 .build();
 
             iceDummyResource = iceUnit.inject('iceDummyResource');
-            spyOn(iceDummyResource, 'getCurrentWeather').and.callFake(iceUnit.getHttpPromiseMock(promiseCallBacker));
+            spyOn(iceDummyResource, 'getCurrentWeather').and.callFake(iceUnit.mock.$http(promiseCallBacker));
 
             $log = iceUnit.inject('$log');
             spyOn($log, 'info');
