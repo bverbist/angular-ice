@@ -11,7 +11,7 @@
 
     <p>
         --save if you want to use some of the directives, services, etc.<br/>
-        --save-dev if you only need the iceUnitTester and/or the IceBasePage
+        --save-dev if you only need the iceUnit(Tester) and/or the IceBasePage
     </p>
 
     <h3 class="text-blue">Setup to use some ice directives, services, ...</h3>
@@ -22,7 +22,7 @@
 
     <pre>
         <code>
-            <span class="ice">&lt;script src="bower_components/angular-ice/angular-ice.js"&gt;&lt;/script&gt;</span>
+            <span class="ice">&lt;script src="<span class="special">bower_components/angular-ice/angular-ice.js</span>"&gt;&lt;/script&gt;</span>
         </code>
     </pre>
 
@@ -32,11 +32,11 @@
 
     <pre>
         <code>
-            <span class="ice">angular.module('</span><span class="special">myApp</span><span class="ice">', ['ice.forms']);</span>
+            <span class="ice">angular.module('</span><span class="special">myApp</span><span class="ice">', ['<span class="special">ice.forms</span>']);</span>
         </code>
     </pre>
 
-    <h3 class="text-blue">Setup to use the iceUnitTester</h3>
+    <h3 class="text-blue">Setup to use the iceUnit(Tester)</h3>
 
     <p>
         <li>add the following file to your <strong>karma.conf.js</strong> files array (after the angular modules, but before your own js files):</li>
@@ -54,12 +54,12 @@
 
     <pre>
         <code>
-            <span class="ice">"iceUnitTester": false</span>
+            <span class="ice">"iceUnit": false</span>
         </code>
     </pre>
 
     <p>
-        <li>now you can use the globally available (only in karma scope) var <strong>iceUnitTester</strong> in your test js files</li>
+        <li>now you can use the globally available (only in karma scope) var <strong>iceUnit</strong> in your test js files</li>
         see examples ...
     </p>
 

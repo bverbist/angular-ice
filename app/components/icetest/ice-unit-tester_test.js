@@ -1,5 +1,5 @@
 /*jshint unused:false*/
-var iceUnitTester = (function() {
+var iceUnit = (function() {
     'use strict';
 
     var injectService = function(serviceName) {

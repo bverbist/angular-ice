@@ -7,7 +7,7 @@ describe('iceCaret:', function() {
     beforeEach(module('ice.common'));
 
     beforeEach(function() {
-        iceCaret = iceUnitTester.inject('iceCaret');
+        iceCaret = iceUnit.inject('iceCaret');
     });
 
     describe('setPosition():', function() {
