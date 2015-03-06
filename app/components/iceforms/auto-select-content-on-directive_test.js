@@ -19,9 +19,19 @@ describe('iceAutoSelectContentOn directive:', function() {
             '</form>';
     }
 
-    function setup(selectEvent, deselectEvent) {
-        var directiveTester = iceUnit.builder
-            .directive('angularIceApp', getElementHtml(selectEvent, deselectEvent))
+    function setup(skipModuleLoad, selectEvent, deselectEvent) {
+        if (typeof skipModuleLoad === 'undefined') {
+            skipModuleLoad = false;
+        }
+
+        var directiveBuilder = iceUnit.builder
+            .directive('angularIceApp', getElementHtml(selectEvent, deselectEvent));
+
+        if (skipModuleLoad) {
+            directiveBuilder.skipModuleLoad();
+        }
+
+        var directiveTester = directiveBuilder
             .withScopeField('modelField', '')
             .build();
 
@@ -33,7 +43,7 @@ describe('iceAutoSelectContentOn directive:', function() {
 
     describe('General:', function() {
         beforeEach(function () {
-            setup();
+            setup(false);
         });
 
         it('content is by default not selected', function() {
@@ -60,7 +70,9 @@ describe('iceAutoSelectContentOn directive:', function() {
 
     describe('IF other event (and deselect event overriden):', function() {
         beforeEach(function () {
-            setup('mouseover', 'mouseout');
+            angular.mock.module('angularIceApp');
+
+            setup(true, 'mouseover', 'mouseout');
         });
 
         it('no error if select and deselect events are passed (overridden) to the directive', function() {

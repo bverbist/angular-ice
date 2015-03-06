@@ -17,6 +17,8 @@ angular
                 });
         };
 
+        $log.info('iceDummy created');
+
         return {
             logCurrentWeather: logCurrentWeather
         };

@@ -2,30 +2,33 @@
 
 describe('iceDummy:', function() {
 
-    describe('test by using custom mock:', function() {
+    describe('test by using custom mock + spyOn another service before instantiating your service (to test service calls during instantiation):', function() {
         var getCurrentWeatherCallBacker = {};
 
         var iceDummyResourceMock = {
             getCurrentWeather: iceUnit.getHttpPromiseMock(getCurrentWeatherCallBacker)
         };
 
-        var logMock = {
-            info: function() {},
-            error: function() {}
-        };
-
         var iceDummy;
+        var $log;
 
         beforeEach(function() {
-            iceDummy = iceUnit.builder
-                .service('ice.dummy', 'iceDummy')
+            // inject another service which we want to spy on before instantiating our service to test (iceDummy)
+            $log = iceUnit.builder
+                .service('ice.dummy', '$log')
                 .withMock('iceDummyResource', iceDummyResourceMock)
-                .withMock('$log', logMock)
                 .build();
 
+            spyOn($log, 'info');
+            spyOn($log, 'error');
+
             spyOn(iceDummyResourceMock, 'getCurrentWeather').and.callThrough();
-            spyOn(logMock, 'info').and.callThrough();
-            spyOn(logMock, 'error').and.callThrough();
+
+            iceDummy = iceUnit.inject('iceDummy');
+        });
+
+        it('logs message when service is created', function() {
+            expect($log.info).toHaveBeenCalledWith('iceDummy created');
         });
 
         it('logs current temperature as info on success', function() {
@@ -35,7 +38,7 @@ describe('iceDummy:', function() {
 
             getCurrentWeatherCallBacker.success(validCurrentWeather);
 
-            expect(logMock.info).toHaveBeenCalledWith('current weather: 123');
+            expect($log.info).toHaveBeenCalledWith('current weather: 123');
         });
 
         it('logs error message on failure', function() {
@@ -43,7 +46,7 @@ describe('iceDummy:', function() {
 
             getCurrentWeatherCallBacker.error('backend down', 404);
 
-            expect(logMock.error).toHaveBeenCalledWith('getCurrentWeather failed - status: 404 - data: backend down');
+            expect($log.error).toHaveBeenCalledWith('getCurrentWeather failed - status: 404 - data: backend down');
         });
     });
 
@@ -60,9 +63,9 @@ describe('iceDummy:', function() {
                 .build();
 
             iceDummyResource = iceUnit.inject('iceDummyResource');
-            $log = iceUnit.inject('$log');
-
             spyOn(iceDummyResource, 'getCurrentWeather').and.callFake(iceUnit.getHttpPromiseMock(promiseCallBacker));
+
+            $log = iceUnit.inject('$log');
             spyOn($log, 'info');
             spyOn($log, 'error');
         });

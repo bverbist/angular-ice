@@ -119,6 +119,7 @@ var iceUnit = (function() {
         this.moduleName = moduleName;
         this.elementHtml = elementHtml;
         this.scopeFields = [];
+        this.loadModule = true;
     }
 
     DirectiveBuilder.prototype.withScopeField = function(fieldName, fieldValue) {
@@ -126,8 +127,15 @@ var iceUnit = (function() {
         return this;
     };
 
+    DirectiveBuilder.prototype.skipModuleLoad = function() {
+        this.loadModule = false;
+        return this;
+    };
+
     DirectiveBuilder.prototype.build = function() {
-        angular.mock.module(this.moduleName);
+        if (this.loadModule === true) {
+            angular.mock.module(this.moduleName);
+        }
 
         var $compile = injectService('$compile');
         var $rootScope = injectService('$rootScope');

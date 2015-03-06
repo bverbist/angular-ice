@@ -71,6 +71,33 @@
         </code>
     </pre>
 
+    <p>If you need to verify (spy) if 'yourService' calls another service during service instantiation:
+        <ol>
+            <li>use iceUnit.builder.service(...).build(); to get the other service</li>
+            <li>setup spy on the other service</li>
+            <li>use iceUnit.inject('yourService'); to get the service you want to test (your service is now instantiated after the spy setup)</li>
+        </ol>
+    </p>
+
+    <pre>
+        <code>
+            <span class="indent other">...</span>
+            <span class="indent other"></span>
+            <span class="indent special">beforeEach(function() {</span>
+            <span class="indent2 ice">otherService = iceUnit.builder</span>
+            <span class="indent4 ice">.service(</span><span class="special">'ServiceModule', 'otherService'</span><span class="ice">)</span>
+            <span class="indent4 optional">[.withMock('$log', logMock)]</span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent2"></span>
+            <span class="indent2 special">spyOn(otherService, 'functionToSpy'); // jasmine</span>
+            <span class="indent2"></span>
+            <span class="indent2 ice">yourService = iceUnit.inject('yourService');</span>
+            <span class="indent special">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">...</span>
+        </code>
+    </pre>
+
     <li><u>testing a <strong>directive</strong></u></li>
 
     <pre>
@@ -85,6 +112,7 @@
             <span class="indent2 ice">var directiveTester = iceUnit.builder</span>
             <span class="indent4 ice">.directive(</span><span class="special">'YourApp', 'HTML of element'</span><span class="ice">)</span>
             <span class="indent4 optional">[.withScopeField('someFieldName', 'some initial value')]</span>
+            <span class="indent4 optional">[.skipModuleLoad()]</span><span class="indent special">// if you loaded the module already (e.g. to setup mocking)</span>
             <span class="indent4 ice">.build();</span>
             <span class="indent2 ice"></span>
             <span class="indent2 ice">$scope = directiveTester.$scope;</span>
