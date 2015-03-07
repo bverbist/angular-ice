@@ -10,32 +10,32 @@ var iceUnit = (function() {
         return service;
     };
 
-    var getPromiseMock = function(promiseCallBacker) {
+    var getPromiseMock = function(callbackObject) {
         return function() {
             return {
                 then: function(successCallback, errorCallback, notifyCallback) {
-                    promiseCallBacker.success = successCallback;
-                    promiseCallBacker.error = errorCallback;
-                    promiseCallBacker.notify = notifyCallback;
+                    callbackObject.success = successCallback;
+                    callbackObject.error = errorCallback;
+                    callbackObject.notify = notifyCallback;
                 },
                 catch: function(errorCallback) {
-                    promiseCallBacker.success = null;
-                    promiseCallBacker.error = errorCallback;
+                    callbackObject.success = null;
+                    callbackObject.error = errorCallback;
                 }
             };
         };
     };
 
-    var getHttpPromiseMock = function(promiseCallBacker) {
+    var getHttpPromiseMock = function(callbackObject) {
         return function() {
-            var promiseMock = getPromiseMock(promiseCallBacker)();
+            var promiseMock = getPromiseMock(callbackObject)();
 
             promiseMock.success = function(successCallback) {
-                promiseCallBacker.success = successCallback;
+                callbackObject.success = successCallback;
 
                 return {
                     error: function(errorCallback) {
-                        promiseCallBacker.error = errorCallback;
+                        callbackObject.error = errorCallback;
                     }
                 };
             };
@@ -44,9 +44,52 @@ var iceUnit = (function() {
         };
     };
 
+    var extendArray = function(array, otherArray) {
+        otherArray.forEach(function(elem) {
+            array.push(elem);
+        });
+    };
+
+    var getResourceActionMock = function(isArray, callbackObject) {
+        return function (paramObject, successCallback, errorCallback) {
+            var resultReferenceObject;
+            if (isArray) {
+                resultReferenceObject = [];
+                resultReferenceObject.$resolved = false;
+            } else {
+                resultReferenceObject = {
+                    $resolved: false
+                };
+            }
+
+            callbackObject.success = function(value, responseHeaders) {
+                if (isArray) {
+                    extendArray(resultReferenceObject, value);
+                } else {
+                    angular.copy(value, resultReferenceObject);
+                }
+
+                resultReferenceObject.$resolved = true;
+
+                successCallback(value, responseHeaders);
+            };
+
+            callbackObject.error = function(httpResponse) {
+                resultReferenceObject.$resolved = true;
+
+                errorCallback(httpResponse);
+            };
+
+            resultReferenceObject.$promise = getPromiseMock(callbackObject)();
+
+            return resultReferenceObject;
+        };
+    };
+
     var mock = {
         promise: getPromiseMock,
-        $http: getHttpPromiseMock
+        $httpPromise: getHttpPromiseMock,
+        $resourceAction: getResourceActionMock
     };
 
     function ControllerScopeBuilder(moduleName, controllerName) {
@@ -160,6 +203,38 @@ var iceUnit = (function() {
         };
     };
 
+    function ResourceMockBuilder(callbackObject) {
+        this.actions = [
+            {name: 'get', isArray: false},
+            {name: 'save', isArray: false},
+            {name: 'query', isArray: true},
+            {name: 'remove', isArray: false},
+            {name: 'delete', isArray: false}
+        ];
+        this.callbackObject = callbackObject;
+    }
+
+    ResourceMockBuilder.prototype.withExtraAction = function(actionName, isArray) {
+        this.actions.push({name: actionName, isArray: isArray});
+        return this;
+    };
+
+    ResourceMockBuilder.prototype.build = function() {
+        var _this = this;
+        return function() {
+            var resourceMock = {};
+
+            if (_this.actions.length > 0) {
+                _this.actions.forEach(function(action) {
+                    _this.callbackObject[action.name] = {};
+                    resourceMock[action.name] = getResourceActionMock(action.isArray, _this.callbackObject[action.name]);
+                });
+            }
+
+            return resourceMock;
+        };
+    };
+
     var builder = {
         controllerScope: function(moduleName, controllerName) {
             if (typeof moduleName === 'undefined') {
@@ -187,6 +262,12 @@ var iceUnit = (function() {
                 return undefined;
             }
             return new DirectiveBuilder(moduleName, elementHtml);
+        },
+        $resourceMock: function(callbackObject) {
+            if (typeof callbackObject === 'undefined') {
+                return undefined;
+            }
+            return new ResourceMockBuilder(callbackObject);
         }
     };
 

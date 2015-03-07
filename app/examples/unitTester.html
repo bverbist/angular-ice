@@ -154,7 +154,8 @@
 
     <li><u>mocking a <strong>promise</strong></u></li>
 
-    <p>Need to test code that behaves differently based on a promise? With the 'iceUnit.mock.[...]' functions you can mock a promise and simulate its success- or error callback.<br/>
+    <p>Need to test code that behaves differently based on a promise? And you don't want to use $httpBackend in all your unit tests? (should only be used in the test of the actual service that is doing a $http or $resource call, otherwise you're tightly coupling all your service/controller tests to the rest contract)<br/>
+        With the 'iceUnit.mock.[...]' functions you can mock a promise and simulate its success- or error callback.
     </p>
 
     <p><strong>iceUnit.mock.promise(</strong>callbackObject<strong>)</strong> supports following promise methods:</p>
@@ -167,7 +168,7 @@
         </code>
     </pre>
 
-    <p><strong>iceUnit.mock.$http(</strong>callbackObject<strong>)</strong> - specifically made to mock an angular $http call - supports following promise methods:</p>
+    <p><strong>iceUnit.mock.$httpPromise(</strong>callbackObject<strong>)</strong> - specifically made to mock the promise result of an angular $http call - supports following promise methods:</p>
 
     <pre>
         <code>
@@ -201,7 +202,7 @@
             <span class="indent ice">var getSomethingCallBacker = {};</span><span class="indent special">// success and error callbacks will be stored in this object</span>
             <span class="indent other"></span>
             <span class="indent special">var anotherServiceMock = {</span>
-            <span class="indent2 special">getSomething: </span><span class="ice">iceUnit.mock.$http(getSomethingCallBacker)</span>
+            <span class="indent2 special">getSomething: </span><span class="ice">iceUnit.mock.$httpPromise(getSomethingCallBacker)</span>
             <span class="indent special">};</span>
             <span class="indent other"></span>
             <span class="indent other">beforeEach(function() {</span>

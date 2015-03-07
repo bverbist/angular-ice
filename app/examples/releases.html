@@ -12,8 +12,8 @@
     <h4>Breaking Changes</h4>
 
     <p><ul>
-    <li>renamed <b>iceUnitTester</b> to <b>iceUnit</b></li>
-    <li>refactored fluent api of <b>iceUnit builders</b>
+    <li>shortened <b>iceUnitTester</b> to <b>iceUnit</b></li>
+    <li>refactored fluent api of <b>iceUnit builders</b>:
         <ul>
             <li>iceUnitTester.controllerScopeBuilder(...).build(); becomes iceUnit.builder.controllerScope(...).build();</li>
             <li>iceUnitTester.serviceBuilder(...).build(); becomes iceUnit.builder.service(...).build();</li>
@@ -23,7 +23,7 @@
     <li>refactored api to get <b>iceUnit promise mocks</b>
         <ul>
             <li>iceUnitTester.getPromiseMock(...); becomes iceUnit.mock.promise(...);</li>
-            <li>iceUnitTester.getHttpPromiseMock(...); becomes iceUnit.mock.$http(...);</li>
+            <li>iceUnitTester.getHttpPromiseMock(...); becomes iceUnit.mock.$httpPromise(...);</li>
         </ul>
     </li>
     </ul></p>

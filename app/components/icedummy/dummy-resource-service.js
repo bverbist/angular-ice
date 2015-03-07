@@ -2,7 +2,7 @@
 
 angular
     .module('ice.dummy')
-    .factory('iceDummyResource', function iceDummyResourceFactory($http) {
+    .factory('iceDummyResource', function iceDummyResourceFactory($http, $resource) {
         var TIMEOUT_IN_MILLIS = 2000; //= 2 sec
 
         var getCurrentWeather = function(cityName, countryCode) {
@@ -14,7 +14,26 @@ angular
             });
         };
 
+        var getCurrentWeatherResource = function() {
+            return $resource('http://api.openweathermap.org/data/2.5/weather?q=:cityName,:countryCode');
+        };
+
+        var githubResource = $resource('https://api.github.com/users/:username/repos');
+
+        var getGithubReposOfUser = function(username, successCallback, errorCallback) {
+            return githubResource.query(
+                {
+                    username: username
+                },
+                successCallback,
+                errorCallback
+            );
+        };
+
         return {
-            getCurrentWeather: getCurrentWeather
+            getCurrentWeather: getCurrentWeather,
+            getCurrentWeatherResource: getCurrentWeatherResource,
+            githubResource: githubResource,
+            getGithubReposOfUser: getGithubReposOfUser
         };
     });
