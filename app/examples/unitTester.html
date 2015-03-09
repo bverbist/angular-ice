@@ -3,14 +3,20 @@
 
     <p>Helper object to reduce boilerplate code when unit testing angular controllers, services, directives, etc.</p>
 
+    <h4>Available</h4>
+    <ul>
+        <li><a ng-click="goToAnchor('controller')">testing a controller</a> [since 0.2.0]</li>
+        <li><a ng-click="goToAnchor('service')">testing a service</a> [0.2.0]</li>
+        <li><a ng-click="goToAnchor('directive')">testing a directive</a> [0.2.0]</li>
+        <li><a ng-click="goToAnchor('inject')">injecting a service</a> [0.2.0]</li>
+        <li><a ng-click="goToAnchor('mockPromise')">mocking a promise</a> [0.2.0]</li>
+        <li><a ng-click="goToAnchor('mockHttpPromise')">mocking a $http promise</a> [0.2.0]</li>
+        <li><a ng-click="goToAnchor('mockResource')">mocking a $resource object</a> [0.4.0]</li>
+    </ul>
 
-    <h4>Available since</h4>
+    <hr/>
 
-    <p>0.2.0</p>
-
-    <h4>Usage</h4>
-
-    <li><u>testing a <strong>controller</strong></u></li>
+    <h4 id="controller">Testing a controller</h4>
 
     <p>p.s. Example when the 'building' of the controller under test ('YourCtrl') is <u>not</u> done in a beforeEach block, so that you can setup some mocking before the controller is initialised.</p>
 
@@ -39,7 +45,7 @@
         </code>
     </pre>
 
-    <li><u>testing a <strong>service</strong></u></li>
+    <h4 id="service">Testing a service</h4>
 
     <p>p.s. Example when replacing a dependency (in this case the $log service) of the service under test ('yourService') with a mock/stub of your own.</p>
 
@@ -98,7 +104,7 @@
         </code>
     </pre>
 
-    <li><u>testing a <strong>directive</strong></u></li>
+    <h4 id="directive">Testing a directive</h4>
 
     <pre>
         <code>
@@ -126,7 +132,7 @@
         </code>
     </pre>
 
-    <li><u>just injecting a <strong>service</strong></u></li>
+    <h4 id="inject">Injecting a service</h4>
 
     <p>you can do</p>
 
@@ -152,9 +158,9 @@
         </code>
     </pre>
 
-    <li><u>mocking a <strong>promise</strong></u></li>
+    <h4 id="mockPromise">Mocking a promise</h4>
 
-    <p>Need to test code that behaves differently based on a promise? And you don't want to use $httpBackend in all your unit tests? (should only be used in the test of the actual service that is doing a $http or $resource call, otherwise you're tightly coupling all your service/controller tests to the rest contract)<br/>
+    <p>Need to test code that behaves differently based on a promise?<br/>
         With the 'iceUnit.mock.[...]' functions you can mock a promise and simulate its success- or error callback.
     </p>
 
@@ -167,6 +173,21 @@
             <span class="special">.catch(errorCallback)</span>
         </code>
     </pre>
+
+    <p>the callback functions are stored in the input <strong>callbackObject</strong>:</p>
+
+    <pre>
+        <code>
+            <span class="special">callbackObject</span><span class="ice">.success</span>
+            <span class="special">callbackObject</span><span class="ice">.error</span>
+            <span class="special">callbackObject</span><span class="ice">.notify</span>
+        </code>
+    </pre>
+
+    <h4 id="mockHttpPromise">Mocking a $http promise</h4>
+
+    <p>The angular $http service returns a special promise. This promise can also be mocked without using $httpBackend in all your unit tests.<br/>
+        p.s. $httpBackend should only be used in the test of the actual service that is doing a $http call, otherwise you're tightly coupling all your service/controller tests to the rest contract.</p>
 
     <p><strong>iceUnit.mock.$httpPromise(</strong>callbackObject<strong>)</strong> - specifically made to mock the promise result of an angular $http call - supports following promise methods:</p>
 
@@ -181,15 +202,7 @@
         </code>
     </pre>
 
-    <p>the callback functions are stored in the input <strong>callbackObject</strong>:</p>
-
-    <pre>
-        <code>
-            <span class="special">callbackObject</span><span class="ice">.success</span>
-            <span class="special">callbackObject</span><span class="ice">.error</span>
-            <span class="special">callbackObject</span><span class="ice">.notify</span>
-        </code>
-    </pre>
+    <p>the same callback functions are stored in the input <strong>callbackObject</strong> as the regular promise (see above)</p>
 
     <p><strong>Example</strong> where 'myService.myMethod()' behaves differently based on the promise returned by the 'getSomething' method of 'anotherService'.</p>
 
@@ -230,6 +243,110 @@
             <span class="other">});</span>
         </code>
     </pre>
+
+    <h4 id="mockResource">Mocking a $resource object</h4>
+
+    <p>The angular $resource service can be used in several ways and is rather complex, but iceUnit can take care of it's mocking for you (again, if you do not want to use $httpBackend all over your unit tests).</p>
+
+    <p><strong>Example:</strong> You want to unit test 'YourCtrl' that interacts with the $resource object returned by the 'openweatherResource' service.<br/>
+        In this case the $resource returns an empty reference object (stored in $scope.currentWeather) that will automagically be populated once the server returns the data.
+    </p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">angular.module('...').factory('<span class="optional">openweatherResource</span>', function openweatherResourceFactory($resource) {</span>
+            <span class="indent other"><span class="optional">return $resource</span>('http://api.openweathermap.org/data/2.5/weather?q=<span class="special">:cityName</span>,<span class="special">:countryCode</span>');</span>
+            <span class="other">});</span>
+            <span class="other"></span>
+            <span class="other">angular.module('YourApp').controller('YourCtrl', function ($scope, <span class="optional">openweatherResource</span>) {</span>
+            <span class="indent other">$scope.currentWeather = <span class="optional">openweatherResource</span>.<span class="ice">get(</span><span class="special">{</span></span>
+            <span class="indent2 special">cityName: 'Leuven',</span>
+            <span class="indent2 special">countryCode: 'be'</span>
+            <span class="indent special">}<span class="ice">, function successCallback() {</span></span>
+            <span class="indent2 other">$scope.promiseReturnedOk = true;</span>
+            <span class="indent other"><span class="ice">}, function errorCallback(httpResponse) {</span></span>
+            <span class="indent2 other">$scope.errorData = httpResponse.data;</span>
+            <span class="indent2 other">$scope.errorStatus = httpResponse.status;</span>
+            <span class="indent other"><span class="ice">});</span></span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <p>The <strong>$resourceMock</strong> builder fluent api mocks the $resource object internals.</p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('YourCtrl:', function() {</span>
+            <span class="indent other">var $scope;</span>
+            <span class="indent special">var openweatherResourceCallBacker = {};</span>
+            <span class="indent other"></span>
+            <span class="indent optional">var openweatherResourceMock = <span class="ice">iceUnit.builder</span></span>
+            <span class="indent4 ice">.$resourceMock(<span class="special">openweatherResourceCallBacker</span>)</span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent other"></span>
+            <span class="indent other">beforeEach(function() {</span>
+            <span class="indent2 other">$scope = iceUnit.builder</span>
+            <span class="indent4 other">.controllerScope('YourApp', 'YourCtrl')</span>
+            <span class="indent4 other">.withMock(<span class="optional">'openweatherResource'</span>, <span class="optional">openweatherResourceMock</span>)</span>
+            <span class="indent4 other">.build();</span>
+            <span class="indent other">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('currentWeather is populated with the return data on rest call success', function() {</span>
+            <span class="indent2 other">expect($scope.currentWeather.<span class="optional">temperature</span>).toBeUndefined();</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 special">var successData = {</span>
+            <span class="indent3 special"><span class="optional">temperature</span>: '30 degrees Celsius'</span>
+            <span class="indent2 special">};</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 special">openweatherResourceCallBacker.<span class="ice">get.success(successData);</span></span><span class="indent special">// simulate $resource 'get' call returns successfully</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 other">expect($scope.currentWeather.<span class="optional">temperature</span>).toBe('30 degrees Celsius');</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <p><strong>iceUnit.builder.$resourceMock(</strong>callbackObject<strong>).build()</strong> supports by default the following $resource methods:</p>
+
+    <pre>
+        <code>
+            <span class="ice">.get<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
+            <span class="ice">.save<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
+            <span class="ice">.query<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
+            <span class="ice">.remove<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
+            <span class="ice">.delete<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
+            <span class="other"></span>
+            <span class="special">// the callback functions are stored in the input callbackObject within an object named after the $resource method</span>
+            <span class="special">// e.g. callbacks for the 'get' method</span>
+            <span class="special">callbackObject<span class="ice">.get</span>.success</span>
+            <span class="special">callbackObject<span class="ice">.get</span>.error</span>
+            <span class="special">callbackObject<span class="ice">.save</span>.success</span>
+            <span class="special">etc.</span>
+        </code>
+    </pre>
+
+    <p>optional $resourceMock builder options:</p>
+
+    <pre>
+        <code>
+            <span class="ice">iceUnit.builder</span>
+            <span class="indent2 ice">.$resourceMock(<span class="special">callbackObject</span>)</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 other">// mock a custom action that was defined extra on the $resource</span>
+            <span class="indent2 other">// actionName: must match your custom $resource action + will be used to store the success/error callbacks on the callbackObject</span>
+            <span class="indent2 other">// isArray: boolean - If true then the returned object for this action is an array, otherwise an object</span>
+            <span class="indent2 other">// isPayload: boolean - Use true if action can receive payload, so use false for GET actions</span>
+            <span class="indent2 optional">.withCustomAction('actionName', &lt;isArray&gt;, &lt;isPayload&gt;)</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 ice">.build();</span>
+        </code>
+    </pre>
+
+    <hr/>
 
     <h4>Live example(s)</h4>
 

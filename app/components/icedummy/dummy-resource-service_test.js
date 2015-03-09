@@ -38,9 +38,9 @@ describe('iceDummyResource:', function() {
         });
     });
 
-    describe('getCurrentWeatherResource()', function() {
-        it('returns a $resource with get/save/query/remove/delete functions + calling its get() function does a rest call that returns (amongst others) a promise', function() {
-            var actual = iceDummyResource.getCurrentWeatherResource();
+    describe('currentWeatherResource', function() {
+        it('is a $resource with get/save/query/remove/delete functions + calling its get() function does a rest call that returns (amongst others) a promise', function() {
+            var actual = iceDummyResource.currentWeatherResource;
 
             expect(actual.get).toBeDefined();
             expect(actual.save).toBeDefined();
@@ -48,6 +48,7 @@ describe('iceDummyResource:', function() {
             expect(actual.remove).toBeDefined();
             expect(actual.delete).toBeDefined();
 
+            // get
             $httpBackend
                 .expectGET('http://api.openweathermap.org/data/2.5/weather?q=Leuven,be', verifyHeaders)
                 .respond(200, {});
@@ -72,6 +73,38 @@ describe('iceDummyResource:', function() {
 
             $httpBackend.flush();
 
+
+            // save
+            $httpBackend
+                .expectPOST('http://api.openweathermap.org/data/2.5/weather?q=Leuven,be', {
+                    postField: 'post value'
+                }, verifyHeaders)
+                .respond(200, {});
+
+            var saveResultRef = actual.save({
+                cityName: 'Leuven',
+                countryCode: 'be'
+            }, {
+                postField: 'post value'
+            });
+
+            expect(angular.isObject(saveResultRef)).toBe(true);
+            expect(angular.isArray(saveResultRef)).toBe(false);
+
+            expect(saveResultRef.$save).toBeDefined();
+            expect(saveResultRef.$remove).toBeDefined();
+            expect(saveResultRef.$delete).toBeDefined();
+
+            expect(saveResultRef.$promise).toBeDefined();
+            expect(saveResultRef.$promise.then).toBeDefined();
+
+            expect(saveResultRef.$resolved).toBeDefined();
+            expect(saveResultRef.$resolved).toBe(false);
+
+            $httpBackend.flush();
+
+
+            // query
             $httpBackend
                 .expectGET('http://api.openweathermap.org/data/2.5/weather?q=Leuven,be', verifyHeaders)
                 .respond(200, []);
@@ -92,6 +125,58 @@ describe('iceDummyResource:', function() {
 
             expect(queryResultRef.$resolved).toBeDefined();
             expect(queryResultRef.$resolved).toBe(false);
+
+            $httpBackend.flush();
+
+
+            // remove
+            $httpBackend
+                .expectDELETE('http://api.openweathermap.org/data/2.5/weather?q=Leuven,be', verifyHeaders)
+                .respond(200, {});
+
+            var removeResultRef = actual.remove({
+                cityName: 'Leuven',
+                countryCode: 'be'
+            });
+
+            expect(angular.isObject(removeResultRef)).toBe(true);
+            expect(angular.isArray(removeResultRef)).toBe(false);
+
+            expect(removeResultRef.$save).toBeDefined();
+            expect(removeResultRef.$remove).toBeDefined();
+            expect(removeResultRef.$delete).toBeDefined();
+
+            expect(removeResultRef.$promise).toBeDefined();
+            expect(removeResultRef.$promise.then).toBeDefined();
+
+            expect(removeResultRef.$resolved).toBeDefined();
+            expect(removeResultRef.$resolved).toBe(false);
+
+            $httpBackend.flush();
+
+
+            // delete
+            $httpBackend
+                .expectDELETE('http://api.openweathermap.org/data/2.5/weather?q=Leuven,be', verifyHeaders)
+                .respond(200, {});
+
+            var deleteResultRef = actual.delete({
+                cityName: 'Leuven',
+                countryCode: 'be'
+            });
+
+            expect(angular.isObject(deleteResultRef)).toBe(true);
+            expect(angular.isArray(deleteResultRef)).toBe(false);
+
+            expect(deleteResultRef.$save).toBeDefined();
+            expect(deleteResultRef.$remove).toBeDefined();
+            expect(deleteResultRef.$delete).toBeDefined();
+
+            expect(deleteResultRef.$promise).toBeDefined();
+            expect(deleteResultRef.$promise.then).toBeDefined();
+
+            expect(deleteResultRef.$resolved).toBeDefined();
+            expect(deleteResultRef.$resolved).toBe(false);
 
             $httpBackend.flush();
         });

@@ -19,7 +19,7 @@ angular
                 });
         };
 
-        var currentWeatherByReferenceObject = iceDummyResource.getCurrentWeatherResource().get({
+        var currentWeatherByReferenceObject = iceDummyResource.currentWeatherResource.get({
             cityName: CITY_NAME,
             countryCode: COUNTRY_CODE
         }, function successCallback() {
@@ -29,12 +29,24 @@ angular
             currentWeatherByReferenceObject.errorStatus = httpResponse.status;
         });
 
+        var currentWeatherSave = iceDummyResource.currentWeatherResource.save({
+            cityName: CITY_NAME,
+            countryCode: COUNTRY_CODE
+        }, {
+            saveField: 'save value'
+        }, function successCallback() {
+            currentWeatherSave.promiseReturnedOk = true;
+        }, function errorCallback(httpResponse) {
+            currentWeatherSave.errorData = httpResponse.data;
+            currentWeatherSave.errorStatus = httpResponse.status;
+        });
+
         var currentWeatherByCallBack = {};
         var getCurrentWeatherByCallBack = function() {
             return currentWeatherByCallBack;
         };
         var doCurrentWeatherByCallBack = function() {
-            iceDummyResource.getCurrentWeatherResource().get({
+            iceDummyResource.currentWeatherResource.get({
                 cityName: CITY_NAME,
                 countryCode: COUNTRY_CODE
             }, function successCallback(value) {
@@ -51,7 +63,7 @@ angular
             return currentWeatherByPromise;
         };
         var doCurrentWeatherByPromise = function() {
-            iceDummyResource.getCurrentWeatherResource().get({
+            iceDummyResource.currentWeatherResource.get({
                 cityName: CITY_NAME,
                 countryCode: COUNTRY_CODE
             }).$promise.then(function successCallback(value) {
@@ -77,6 +89,7 @@ angular
         return {
             logCurrentWeather: logCurrentWeather,
             currentWeatherByReferenceObject: currentWeatherByReferenceObject,
+            currentWeatherSave: currentWeatherSave,
             getCurrentWeatherByCallBack: getCurrentWeatherByCallBack,
             doCurrentWeatherByCallBack: doCurrentWeatherByCallBack,
             getCurrentWeatherByPromise: getCurrentWeatherByPromise,

@@ -1,4 +1,4 @@
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.nav, .pagination, .carousel, .panel-title, #examples a { cursor: pointer; }
 
 .text-blue {
     color: #008B8B;

@@ -4,13 +4,13 @@ describe('iceDummy:', function() {
 
     describe('test by using custom mock + spyOn another service before instantiating your service (to test service calls during instantiation):', function() {
         var getCurrentWeatherCallBacker = {};
-        var getCurrentWeatherResourceCallBacker = {};
+        var currentWeatherResourceCallBacker = {};
         var getGithubReposOfUserCallBacker = {};
 
         var iceDummyResourceMock = {
             getCurrentWeather: iceUnit.mock.$httpPromise(getCurrentWeatherCallBacker),
-            getCurrentWeatherResource: iceUnit.builder.$resourceMock(getCurrentWeatherResourceCallBacker).build(),
-            getGithubReposOfUser: iceUnit.mock.$resourceAction(true, getGithubReposOfUserCallBacker)
+            currentWeatherResource: iceUnit.builder.$resourceMock(currentWeatherResourceCallBacker).build(),
+            getGithubReposOfUser: iceUnit.mock.$resourceAction(true, false, getGithubReposOfUserCallBacker)
         };
 
         var iceDummy;
@@ -27,6 +27,9 @@ describe('iceDummy:', function() {
             spyOn($log, 'error');
 
             spyOn(iceDummyResourceMock, 'getCurrentWeather').and.callThrough();
+            spyOn(iceDummyResourceMock.currentWeatherResource, 'save').and.callThrough();
+            spyOn(iceDummyResourceMock.currentWeatherResource, 'get').and.callThrough();
+            spyOn(iceDummyResourceMock, 'getGithubReposOfUser').and.callThrough();
 
             iceDummy = iceUnit.inject('iceDummy');
         });
@@ -61,6 +64,11 @@ describe('iceDummy:', function() {
 
                 expect(angular.isObject(iceDummy.currentWeatherByReferenceObject)).toBe(true);
                 expect(angular.isArray(iceDummy.currentWeatherByReferenceObject)).toBe(false);
+
+                var argsGetCall = iceDummyResourceMock.currentWeatherResource.get.calls.mostRecent().args;
+
+                expect(argsGetCall[0].cityName).toBe('Leuven');
+                expect(argsGetCall[0].countryCode).toBe('be');
             });
 
             it('is populated with the return data on success', function() {
@@ -68,7 +76,7 @@ describe('iceDummy:', function() {
                     someField: 'some data'
                 };
 
-                getCurrentWeatherResourceCallBacker.get.success(successValue);
+                currentWeatherResourceCallBacker.get.success(successValue);
 
                 expect(iceDummy.currentWeatherByReferenceObject.someField).toBe('some data');
                 expect(iceDummy.currentWeatherByReferenceObject.promiseReturnedOk).toBe(true);
@@ -84,13 +92,61 @@ describe('iceDummy:', function() {
                     status: 400
                 };
 
-                getCurrentWeatherResourceCallBacker.get.error(errorHttpResponse);
+                currentWeatherResourceCallBacker.get.error(errorHttpResponse);
 
                 expect(iceDummy.currentWeatherByReferenceObject.errorData).toBe('some error reason');
                 expect(iceDummy.currentWeatherByReferenceObject.errorStatus).toBe(400);
 
                 expect(iceDummy.currentWeatherByReferenceObject.someField).toBeUndefined();
                 expect(iceDummy.currentWeatherByReferenceObject.$resolved).toBe(true);
+            });
+        });
+
+        describe('var currentWeatherSave:', function() {
+            it('also postData passed in save call (vs. get)', function() {
+                expect(iceDummy.currentWeatherSave.$promise).toBeDefined();
+                expect(iceDummy.currentWeatherSave.$resolved).toBe(false);
+                expect(iceDummy.currentWeatherSave.someField).toBeUndefined();
+
+                expect(angular.isObject(iceDummy.currentWeatherSave)).toBe(true);
+                expect(angular.isArray(iceDummy.currentWeatherSave)).toBe(false);
+
+                var argsSaveCall = iceDummyResourceMock.currentWeatherResource.save.calls.mostRecent().args;
+
+                expect(argsSaveCall[0].cityName).toBe('Leuven');
+                expect(argsSaveCall[0].countryCode).toBe('be');
+
+                expect(argsSaveCall[1].saveField).toBe('save value');
+            });
+
+            it('is populated with the return data on success', function() {
+                var successValue = {
+                    someField: 'some data'
+                };
+
+                currentWeatherResourceCallBacker.save.success(successValue);
+
+                expect(iceDummy.currentWeatherSave.someField).toBe('some data');
+                expect(iceDummy.currentWeatherSave.promiseReturnedOk).toBe(true);
+                expect(iceDummy.currentWeatherSave.$resolved).toBe(true);
+
+                expect(iceDummy.currentWeatherSave.errorData).toBeUndefined();
+                expect(iceDummy.currentWeatherSave.errorStatus).toBeUndefined();
+            });
+
+            it('takes the httpResponse data & status on error', function() {
+                var errorHttpResponse = {
+                    data: 'some error reason',
+                    status: 400
+                };
+
+                currentWeatherResourceCallBacker.save.error(errorHttpResponse);
+
+                expect(iceDummy.currentWeatherSave.errorData).toBe('some error reason');
+                expect(iceDummy.currentWeatherSave.errorStatus).toBe(400);
+
+                expect(iceDummy.currentWeatherSave.someField).toBeUndefined();
+                expect(iceDummy.currentWeatherSave.$resolved).toBe(true);
             });
         });
 
@@ -108,7 +164,7 @@ describe('iceDummy:', function() {
                     someField: 'some data'
                 };
 
-                getCurrentWeatherResourceCallBacker.get.success(successValue);
+                currentWeatherResourceCallBacker.get.success(successValue);
 
                 expect(iceDummy.getCurrentWeatherByCallBack().someField).toBe('some data');
                 expect(iceDummy.getCurrentWeatherByCallBack().promiseReturnedOk).toBe(true);
@@ -125,7 +181,7 @@ describe('iceDummy:', function() {
                     status: 400
                 };
 
-                getCurrentWeatherResourceCallBacker.get.error(errorHttpResponse);
+                currentWeatherResourceCallBacker.get.error(errorHttpResponse);
 
                 expect(iceDummy.getCurrentWeatherByCallBack().errorData).toBe('some error reason');
                 expect(iceDummy.getCurrentWeatherByCallBack().errorStatus).toBe(400);
@@ -148,7 +204,7 @@ describe('iceDummy:', function() {
                     someField: 'some data'
                 };
 
-                getCurrentWeatherResourceCallBacker.get.success(successValue);
+                currentWeatherResourceCallBacker.get.success(successValue);
 
                 expect(iceDummy.getCurrentWeatherByPromise().someField).toBe('some data');
                 expect(iceDummy.getCurrentWeatherByPromise().promiseReturnedOk).toBe(true);
@@ -165,7 +221,7 @@ describe('iceDummy:', function() {
                     status: 400
                 };
 
-                getCurrentWeatherResourceCallBacker.get.error(errorHttpResponse);
+                currentWeatherResourceCallBacker.get.error(errorHttpResponse);
 
                 expect(iceDummy.getCurrentWeatherByPromise().errorData).toBe('some error reason');
                 expect(iceDummy.getCurrentWeatherByPromise().errorStatus).toBe(400);
@@ -182,6 +238,9 @@ describe('iceDummy:', function() {
 
                 expect(angular.isArray(iceDummy.githubReposOfUser)).toBe(true);
                 expect(iceDummy.githubReposOfUser.length).toBe(0);
+
+                var argsGetCall = iceDummyResourceMock.getGithubReposOfUser.calls.mostRecent().args;
+                expect(argsGetCall[0]).toBe('bverbist');
             });
 
             it('is populated with the return data on success', function() {

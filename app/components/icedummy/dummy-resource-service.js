@@ -14,9 +14,7 @@ angular
             });
         };
 
-        var getCurrentWeatherResource = function() {
-            return $resource('http://api.openweathermap.org/data/2.5/weather?q=:cityName,:countryCode');
-        };
+        var currentWeatherResource = $resource('http://api.openweathermap.org/data/2.5/weather?q=:cityName,:countryCode');
 
         var githubResource = $resource('https://api.github.com/users/:username/repos');
 
@@ -32,7 +30,7 @@ angular
 
         return {
             getCurrentWeather: getCurrentWeather,
-            getCurrentWeatherResource: getCurrentWeatherResource,
+            currentWeatherResource: currentWeatherResource,
             githubResource: githubResource,
             getGithubReposOfUser: getGithubReposOfUser
         };
