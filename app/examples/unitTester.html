@@ -12,6 +12,8 @@
         <li><a ng-click="goToAnchor('mockPromise')">mocking a promise</a> [0.2.0]</li>
         <li><a ng-click="goToAnchor('mockHttpPromise')">mocking a $http promise</a> [0.2.0]</li>
         <li><a ng-click="goToAnchor('mockResource')">mocking a $resource object</a> [0.4.0]</li>
+        <li><a ng-click="goToAnchor('mockResourceAction')">mocking a $resource action</a> [0.4.0]</li>
+        <li><a ng-click="goToAnchor('liveExamples')">live examples</a></li>
     </ul>
 
     <hr/>
@@ -314,17 +316,26 @@
 
     <pre>
         <code>
+            <span class="ice">// !! the current iceTest version [0.4.0] supports these methods only when they are called in your code with all parameters !!</span>
             <span class="ice">.get<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.save<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
             <span class="ice">.query<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.remove<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
             <span class="ice">.delete<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
             <span class="other"></span>
+            <span class="ice">// instance methods</span>
+            <span class="ice">.$save<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
+            <span class="ice">.$remove<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
+            <span class="ice">.$delete<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
+            <span class="other"></span>
             <span class="special">// the callback functions are stored in the input callbackObject within an object named after the $resource method</span>
-            <span class="special">// e.g. callbacks for the 'get' method</span>
+            <span class="special">// e.g. callbacks for the 'get', 'save' and '$delete' methods</span>
             <span class="special">callbackObject<span class="ice">.get</span>.success</span>
             <span class="special">callbackObject<span class="ice">.get</span>.error</span>
             <span class="special">callbackObject<span class="ice">.save</span>.success</span>
+            <span class="special">callbackObject<span class="ice">.save</span>.error</span>
+            <span class="special">callbackObject<span class="ice">.$delete</span>.success</span>
+            <span class="special">callbackObject<span class="ice">.$delete</span>.error</span>
             <span class="special">etc.</span>
         </code>
     </pre>
@@ -348,9 +359,82 @@
         </code>
     </pre>
 
+    <h4 id="mockResourceAction">Mocking a $resource action</h4>
+
+    <p>Usefull if you want to mock a single action/method of a $resource object.</p>
+
+    <p><strong>Example:</strong> You want to unit test 'YourCtrl' that interacts with the $resource query action returned by the 'githubResource' service.
+    </p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">angular.module('...').factory('<span class="optional">githubResource</span>', function githubResourceFactory($resource) {</span>
+            <span class="indent other"><span class="optional">var githubRes = $resource</span>('https://api.github.com/users/:username/repos');</span>
+            <span class="indent other">return {</span>
+            <span class="indent2 other"><span class="ice">getUserRepos</span>: function(<span class="special">username</span>, successCallback, errorCallback) {</span>
+            <span class="indent3 optional">return githubRes.query(</span>
+            <span class="indent4 other">{ username: <span class="special">username</span> },</span>
+            <span class="indent4 other">successCallback,</span>
+            <span class="indent4 other">errorCallback</span>
+            <span class="indent3 optional">);</span>
+            <span class="indent2 other">}</span>
+            <span class="indent other">};</span>
+            <span class="other">});</span>
+            <span class="other"></span>
+            <span class="other">angular.module('YourApp').controller('YourCtrl', function ($scope, <span class="optional">githubResource</span>, <span class="special">user</span>) {</span>
+            <span class="indent other">$scope.githubReposOfUser = <span class="optional">githubResource</span>.<span class="ice">getUserRepos(</span></span>
+            <span class="indent2 special">user.getName()<span class="ice">,</span></span>
+            <span class="indent2 ice">function successCallback() {</span>
+            <span class="indent3 other">$scope.promiseReturnedOk = true;</span>
+            <span class="indent2 ice">}, function errorCallback(httpResponse) {</span>
+            <span class="indent3 other">$scope.errorData = httpResponse.data;</span>
+            <span class="indent3 other">$scope.errorStatus = httpResponse.status;</span>
+            <span class="indent2 other"><span class="ice">});</span></span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <p>The <strong>$resourceActionMock</strong> builder fluent api mocks the $resource action internals.</p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('YourCtrl:', function() {</span>
+            <span class="indent other">var $scope;</span>
+            <span class="indent special">var getUserReposCallBacker = {};</span>
+            <span class="indent other"></span>
+            <span class="indent optional">var githubResourceMock = {</span>
+            <span class="indent3 ice">getUserRepos: iceUnit.builder</span></span>
+            <span class="indent4 ice">.$resourceActionMock(<span class="optional">'query'</span>, <span class="special">getUserReposCallBacker</span>)</span>
+            <span class="indent4 ice">.acceptsPayload(false)</span>
+            <span class="indent4 ice">.returnsArray(true)</span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent optional">};</span>
+            <span class="indent other"></span>
+            <span class="indent other">beforeEach(function() {</span>
+            <span class="indent2 other">$scope = iceUnit.builder</span>
+            <span class="indent4 other">.controllerScope('YourApp', 'YourCtrl')</span>
+            <span class="indent4 other">.withMock(<span class="optional">'githubResource'</span>, <span class="optional">githubResourceMock</span>)</span>
+            <span class="indent4 other">.build();</span>
+            <span class="indent other">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('githubReposOfUser is populated with the return data on rest call success', function() {</span>
+            <span class="indent2 special">var successData = [ { repoName: 'angular-ice' }, { repoName: 'bower-angular-ice' } ];</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 special">getUserReposCallBacker.<span class="optional">query</span><span class="ice">.success(successData);</span></span><span class="indent special">// simulate $resource 'query' call returns successfully</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 other">expect($scope.githubReposOfUser.length).toBe(2);</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
     <hr/>
 
-    <h4>Live example(s)</h4>
+    <h4 id="liveExamples">Live example(s)</h4>
 
     <p>See some <strong>_test.js</strong> files in the <a href="https://github.com/bverbist/angular-ice" target="_blank">angular-ice github code</a></p>
 

@@ -136,8 +136,7 @@ var iceUnit = (function() {
 
     var mock = {
         promise: getPromiseMock,
-        $httpPromise: getHttpPromiseMock,
-        $resourceAction: getResourceActionMock
+        $httpPromise: getHttpPromiseMock
     };
 
     function ControllerScopeBuilder(moduleName, controllerName) {
@@ -285,6 +284,33 @@ var iceUnit = (function() {
         return ResourceMock;
     };
 
+    function ResourceActionMockBuilder(actionName, callbackObject) {
+        this.actionName = actionName;
+        this.callbackObject = callbackObject;
+        this.isArray = false;
+        this.isPayload = false;
+    }
+
+    ResourceActionMockBuilder.prototype.acceptsPayload = function(isPayload) {
+        if (typeof isPayload === 'undefined') {
+            isPayload = true;
+        }
+        this.isPayload = isPayload;
+        return this;
+    };
+
+    ResourceActionMockBuilder.prototype.returnsArray = function(isArray) {
+        if (typeof isArray === 'undefined') {
+            isArray = true;
+        }
+        this.isArray = isArray;
+        return this;
+    };
+
+    ResourceActionMockBuilder.prototype.build = function() {
+        return getResourceActionMock(this.isArray, this.isPayload, this.callbackObject, this.actionName);
+    };
+
     var builder = {
         controllerScope: function(moduleName, controllerName) {
             if (typeof moduleName === 'undefined') {
@@ -318,6 +344,15 @@ var iceUnit = (function() {
                 return undefined;
             }
             return new ResourceMockBuilder(callbackObject);
+        },
+        $resourceActionMock: function(actionName, callbackObject) {
+            if (typeof actionName === 'undefined') {
+                return undefined;
+            }
+            if (typeof callbackObject === 'undefined') {
+                return undefined;
+            }
+            return new ResourceActionMockBuilder(actionName, callbackObject);
         }
     };
 

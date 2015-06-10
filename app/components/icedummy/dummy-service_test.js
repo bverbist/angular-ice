@@ -10,7 +10,7 @@ describe('iceDummy:', function() {
         var iceDummyResourceMock = {
             getCurrentWeather: iceUnit.mock.$httpPromise(getCurrentWeatherCallBacker),
             currentWeatherResource: iceUnit.builder.$resourceMock(currentWeatherResourceCallBacker).build(),
-            getGithubReposOfUser: iceUnit.mock.$resourceAction(true, false, getGithubReposOfUserCallBacker, 'get')
+            getGithubReposOfUser: iceUnit.builder.$resourceActionMock('query', getGithubReposOfUserCallBacker).acceptsPayload(false).returnsArray(true).build()
         };
 
         var iceDummy;
@@ -292,7 +292,7 @@ describe('iceDummy:', function() {
                     { someField: 'other data' }
                 ];
 
-                getGithubReposOfUserCallBacker.get.success(successValue);
+                getGithubReposOfUserCallBacker.query.success(successValue);
 
                 expect(iceDummy.githubReposOfUser.length).toBe(2);
                 expect(iceDummy.githubReposOfUser.promiseReturnedOk).toBe(true);
@@ -315,7 +315,7 @@ describe('iceDummy:', function() {
                     status: 400
                 };
 
-                getGithubReposOfUserCallBacker.get.error(errorHttpResponse);
+                getGithubReposOfUserCallBacker.query.error(errorHttpResponse);
 
                 expect(iceDummy.githubReposOfUser.errorData).toBe('some error reason');
                 expect(iceDummy.githubReposOfUser.errorStatus).toBe(400);
