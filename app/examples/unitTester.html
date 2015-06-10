@@ -336,10 +336,12 @@
             <span class="ice">iceUnit.builder</span>
             <span class="indent2 ice">.$resourceMock(<span class="special">callbackObject</span>)</span>
             <span class="indent2 other"></span>
-            <span class="indent2 other">// mock a custom action that was defined extra on the $resource</span>
-            <span class="indent2 other">// actionName: must match your custom $resource action + will be used to store the success/error callbacks on the callbackObject</span>
-            <span class="indent2 other">// isArray: boolean - If true then the returned object for this action is an array, otherwise an object</span>
-            <span class="indent2 other">// isPayload: boolean - Use true if action can receive payload, so use false for GET actions</span>
+            <span class="indent2 other">/* Mock a custom action that was defined extra on the $resource.</span>
+            <span class="indent2 other"> * </span>
+            <span class="indent2 other"> *   actionName: must match your custom $resource action + will be used to store the success/error callbacks on the callbackObject</span>
+            <span class="indent2 other"> *   isArray: boolean - If true then the returned object for this action is an array, otherwise an object</span>
+            <span class="indent2 other"> *   isPayload: boolean - Use true if action can receive payload, so use false for GET actions</span>
+            <span class="indent2 other"> */</span>
             <span class="indent2 optional">.withCustomAction('actionName', &lt;isArray&gt;, &lt;isPayload&gt;)</span>
             <span class="indent2 other"></span>
             <span class="indent2 ice">.build();</span>

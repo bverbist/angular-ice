@@ -10,7 +10,7 @@ describe('iceDummy:', function() {
         var iceDummyResourceMock = {
             getCurrentWeather: iceUnit.mock.$httpPromise(getCurrentWeatherCallBacker),
             currentWeatherResource: iceUnit.builder.$resourceMock(currentWeatherResourceCallBacker).build(),
-            getGithubReposOfUser: iceUnit.mock.$resourceAction(true, false, getGithubReposOfUserCallBacker)
+            getGithubReposOfUser: iceUnit.mock.$resourceAction(true, false, getGithubReposOfUserCallBacker, 'get')
         };
 
         var iceDummy;
@@ -150,6 +150,49 @@ describe('iceDummy:', function() {
             });
         });
 
+        describe('var currentWeatherNew:', function() {
+            it('is an instance object', function() {
+                expect(iceDummy.getCurrentWeatherNew().$save).toBeDefined();
+                expect(iceDummy.getCurrentWeatherNew().$remove).toBeDefined();
+                expect(iceDummy.getCurrentWeatherNew().$delete).toBeDefined();
+
+                expect(iceDummy.getCurrentWeatherNew().someField).toBeUndefined();
+            });
+
+            it('is populated with the return data on $save success', function() {
+                iceDummy.doCurrentWeatherNewSave();
+
+                expect(iceDummy.getCurrentWeatherNew().someField).toBeUndefined();
+                var successValue = {
+                    someField: 'some data'
+                };
+
+                currentWeatherResourceCallBacker.$save.success(successValue);
+
+                expect(iceDummy.getCurrentWeatherNew().someField).toBe('some data');
+                expect(iceDummy.getCurrentWeatherNew().promiseReturnedOk).toBe(true);
+
+                expect(iceDummy.getCurrentWeatherNew().errorData).toBeUndefined();
+                expect(iceDummy.getCurrentWeatherNew().errorStatus).toBeUndefined();
+            });
+
+            it('takes the httpResponse data & status on error', function() {
+                iceDummy.doCurrentWeatherNewSave();
+
+                var errorHttpResponse = {
+                    data: 'some error reason',
+                    status: 400
+                };
+
+                currentWeatherResourceCallBacker.$save.error(errorHttpResponse);
+
+                expect(iceDummy.getCurrentWeatherNew().errorData).toBe('some error reason');
+                expect(iceDummy.getCurrentWeatherNew().errorStatus).toBe(400);
+
+                expect(iceDummy.getCurrentWeatherNew().someField).toBeUndefined();
+            });
+        });
+
         describe('var currentWeatherByCallBack:', function() {
             it('is an empty object before resource call returns success', function() {
                 expect(iceDummy.getCurrentWeatherByCallBack()).toBeDefined();
@@ -243,17 +286,24 @@ describe('iceDummy:', function() {
                 expect(argsGetCall[0]).toBe('bverbist');
             });
 
-            it('is populated with the return data on success', function() {
+            it('is populated with the return data on success + each elem is instance object', function() {
                 var successValue = [
                     { someField: 'some data' },
                     { someField: 'other data' }
                 ];
 
-                getGithubReposOfUserCallBacker.success(successValue);
+                getGithubReposOfUserCallBacker.get.success(successValue);
 
                 expect(iceDummy.githubReposOfUser.length).toBe(2);
                 expect(iceDummy.githubReposOfUser.promiseReturnedOk).toBe(true);
                 expect(iceDummy.githubReposOfUser.$resolved).toBe(true);
+
+                expect(iceDummy.githubReposOfUser[0].$save).toBeDefined();
+                expect(iceDummy.githubReposOfUser[0].$remove).toBeDefined();
+                expect(iceDummy.githubReposOfUser[0].$delete).toBeDefined();
+                expect(iceDummy.githubReposOfUser[1].$save).toBeDefined();
+                expect(iceDummy.githubReposOfUser[1].$remove).toBeDefined();
+                expect(iceDummy.githubReposOfUser[1].$delete).toBeDefined();
 
                 expect(iceDummy.githubReposOfUser.errorData).toBeUndefined();
                 expect(iceDummy.githubReposOfUser.errorStatus).toBeUndefined();
@@ -265,7 +315,7 @@ describe('iceDummy:', function() {
                     status: 400
                 };
 
-                getGithubReposOfUserCallBacker.error(errorHttpResponse);
+                getGithubReposOfUserCallBacker.get.error(errorHttpResponse);
 
                 expect(iceDummy.githubReposOfUser.errorData).toBe('some error reason');
                 expect(iceDummy.githubReposOfUser.errorStatus).toBe(400);

@@ -44,28 +44,51 @@ var iceUnit = (function() {
         };
     };
 
-    var extendArray = function(array, otherArray) {
+    var extendArray = function(array, otherArray, MakeEachElemOfThisType) {
         otherArray.forEach(function(elem) {
-            array.push(elem);
+            var instanceElem = new MakeEachElemOfThisType();
+            angular.copy(elem, instanceElem);
+            array.push(instanceElem);
         });
     };
 
-    var getResourceActionMock = function(isArray, isPayload, callbackObject) {
-        //for GET actions (and non-GET instance actions):
-        //    return function (paramObject, successCallback, errorCallback) {}
-        //for non-GET 'class' actions:
-        //    return function (paramObject, postData, successCallback, errorCallback) {}
+    var getResourceActionMock = function(isArray, isPayload, callbackObject, actionName, isInstanceCall) {
+        if (typeof isInstanceCall === 'undefined') {
+            isInstanceCall = false;
+        }
 
-        return function () {
-            //var paramObject = arguments[0];
+        callbackObject[actionName] = {};
+
+        //for GET actions (and non-GET instance actions):
+        //    return function ([paramObject], [successCallback], [errorCallback]) {}
+        //for non-GET 'class' actions:
+        //    return function ([paramObject], postData, [successCallback], [errorCallback]) {}
+
+        return function (a0, a1, a2, a3) {
+            //switch(arguments.length) {
+            //    case 4:
+            //        successCallback = a2;
+            //        errorCallback = a3;
+            //        break;
+            //    case 3:
+            //        break;
+            //    case 2:
+            //        break;
+            //    case 1:
+            //        break;
+            //    case 0:
+            //        break;
+            //}
+
+            //var paramObject = a0;
             var successCallback, errorCallback;
             if (isPayload) {
-                //var postData = arguments[1];
-                successCallback = arguments[2];
-                errorCallback = arguments[3];
+                //var postData = a1;
+                successCallback = a2;
+                errorCallback = a3;
             } else {
-                successCallback = arguments[1];
-                errorCallback = arguments[2];
+                successCallback = a1;
+                errorCallback = a2;
             }
 
             var resultReferenceObject;
@@ -73,14 +96,20 @@ var iceUnit = (function() {
                 resultReferenceObject = [];
                 resultReferenceObject.$resolved = false;
             } else {
-                resultReferenceObject = {
-                    $resolved: false
-                };
+                // {}
+                resultReferenceObject = new ResourceMock();
+                resultReferenceObject.$resolved = false;
             }
 
-            callbackObject.success = function(value, responseHeaders) {
+            if (!isInstanceCall && !isArray) {
+                ResourceMock.prototype.$save = getResourceActionMock(false, false, callbackObject, '$save', true);
+                ResourceMock.prototype.$remove = getResourceActionMock(false, false, callbackObject, '$remove', true);
+                ResourceMock.prototype.$delete = getResourceActionMock(false, false, callbackObject, '$delete', true);
+            }
+
+            callbackObject[actionName].success = function(value, responseHeaders) {
                 if (isArray) {
-                    extendArray(resultReferenceObject, value);
+                    extendArray(resultReferenceObject, value, ResourceMock);
                 } else {
                     angular.copy(value, resultReferenceObject);
                 }
@@ -90,14 +119,17 @@ var iceUnit = (function() {
                 successCallback(value, responseHeaders);
             };
 
-            callbackObject.error = function(httpResponse) {
+            callbackObject[actionName].error = function(httpResponse) {
                 resultReferenceObject.$resolved = true;
 
                 errorCallback(httpResponse);
             };
 
-            resultReferenceObject.$promise = getPromiseMock(callbackObject)();
+            resultReferenceObject.$promise = getPromiseMock(callbackObject[actionName])();
 
+            if (isInstanceCall) {
+                return resultReferenceObject.$promise;
+            }
             return resultReferenceObject;
         };
     };
@@ -219,6 +251,8 @@ var iceUnit = (function() {
         };
     };
 
+    function ResourceMock() {}
+
     function ResourceMockBuilder(callbackObject) {
         this.actions = [
             {name: 'get', isArray: false, isPayload: false},
@@ -236,17 +270,19 @@ var iceUnit = (function() {
     };
 
     ResourceMockBuilder.prototype.build = function() {
-        var resourceMock = {};
-
         if (this.actions.length > 0) {
+
+            ResourceMock.prototype.$save = getResourceActionMock(false, false, this.callbackObject, '$save', true);
+            ResourceMock.prototype.$remove = getResourceActionMock(false, false, this.callbackObject, '$remove', true);
+            ResourceMock.prototype.$delete = getResourceActionMock(false, false, this.callbackObject, '$delete', true);
+
             var _this = this;
             this.actions.forEach(function(action) {
-                _this.callbackObject[action.name] = {};
-                resourceMock[action.name] = getResourceActionMock(action.isArray, action.isPayload, _this.callbackObject[action.name]);
+                ResourceMock[action.name] = getResourceActionMock(action.isArray, action.isPayload, _this.callbackObject, action.name);
             });
         }
 
-        return resourceMock;
+        return ResourceMock;
     };
 
     var builder = {

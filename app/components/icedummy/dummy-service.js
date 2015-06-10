@@ -28,6 +28,9 @@ angular
             currentWeatherByReferenceObject.errorData = httpResponse.data;
             currentWeatherByReferenceObject.errorStatus = httpResponse.status;
         });
+        var doCurrentWeatherByReferenceObjectDelete = function() {
+            currentWeatherByReferenceObject.$delete();
+        };
 
         var currentWeatherSave = iceDummyResource.currentWeatherResource.save({
             cityName: CITY_NAME,
@@ -40,6 +43,23 @@ angular
             currentWeatherSave.errorData = httpResponse.data;
             currentWeatherSave.errorStatus = httpResponse.status;
         });
+
+        var currentWeatherNew = new iceDummyResource.currentWeatherResource();
+        var getCurrentWeatherNew = function() {
+            return currentWeatherNew;
+        };
+        var doCurrentWeatherNewSave = function() {
+            currentWeatherNew.$save({
+                cityName: CITY_NAME,
+                countryCode: COUNTRY_CODE
+            }, function successCallback(value) {
+                currentWeatherNew = value;
+                currentWeatherNew.promiseReturnedOk = true;
+            }, function errorCallback(httpResponse) {
+                currentWeatherNew.errorData = httpResponse.data;
+                currentWeatherNew.errorStatus = httpResponse.status;
+            });
+        };
 
         var currentWeatherByCallBack = {};
         var getCurrentWeatherByCallBack = function() {
@@ -89,7 +109,10 @@ angular
         return {
             logCurrentWeather: logCurrentWeather,
             currentWeatherByReferenceObject: currentWeatherByReferenceObject,
+            doCurrentWeatherByReferenceObjectDelete: doCurrentWeatherByReferenceObjectDelete,
             currentWeatherSave: currentWeatherSave,
+            getCurrentWeatherNew: getCurrentWeatherNew,
+            doCurrentWeatherNewSave: doCurrentWeatherNewSave,
             getCurrentWeatherByCallBack: getCurrentWeatherByCallBack,
             doCurrentWeatherByCallBack: doCurrentWeatherByCallBack,
             getCurrentWeatherByPromise: getCurrentWeatherByPromise,
