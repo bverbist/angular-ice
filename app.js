@@ -4,7 +4,8 @@ angular
     .module('angularIceApp', [
         'ngRoute',
         'ui.bootstrap',
-        'ice.forms'
+        'ice.forms',
+        'ice.bank'
     ])
     .config(function($routeProvider) {
         $routeProvider
@@ -22,6 +23,10 @@ angular
             })
             .when('/services', {
                 templateUrl: 'examples/services.html',
+                controller: 'ExamplesCtrl'
+            })
+            .when('/releases', {
+                templateUrl: 'examples/releases.html',
                 controller: 'ExamplesCtrl'
             })
             .otherwise({

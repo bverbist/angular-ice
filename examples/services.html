@@ -1,5 +1,13 @@
 <div id="examples">
-    <h3 class="text-blue">iceCaret</h3>
+    <h4>Available</h4>
+    <ul>
+        <li><a ng-click="goToAnchor('iceCaret')">iceCaret</a></li>
+        <li><a ng-click="goToAnchor('iceStorage')">iceStorage</a></li>
+    </ul>
+
+    <hr/>
+
+    <h3 class="text-blue" id="iceCaret">iceCaret</h3>
 
     <h4>Service Info</h4>
 
@@ -30,6 +38,53 @@
             <span class="indent3 other">}</span>
             <span class="indent2 other">};</span>
             <span class="indent other">});</span>
+        </code>
+    </pre>
+
+    <hr/>
+
+    <h3 class="text-blue" id="iceStorage">iceStorage</h3>
+
+    <h4>Service Info</h4>
+
+    <p>Convenience service to use the localStorage or sessionStorage of your browser.
+    </p>
+
+    <h4>Available since</h4>
+
+    <p>0.4.0</p>
+
+    <h4>Usage local storage</h4>
+
+    <pre>
+        <code>
+            <span class="other">if (<span class="ice">iceStorage</span>.<span class="special">local</span>.<span class="optional">isSupported()</span>) {</span>
+            <span class="indent other"></span>
+            <span class="indent other"><span class="ice">iceStorage</span>.<span class="special">local</span>.<span class="optional">set('YourStorageKey', 'some string')</span>;</span>
+            <span class="indent other">var storageValue = <span class="ice">iceStorage</span>.<span class="special">local</span>.<span class="optional">get('YourStorageKey')</span>;</span>
+            <span class="indent other"></span>
+            <span class="indent other"><span class="ice">iceStorage</span>.<span class="special">local</span>.<span class="optional">setObject('YourStorageKey', {...})</span>;</span>
+            <span class="indent other">var storageObject = <span class="ice">iceStorage</span>.<span class="special">local</span>.<span class="optional">getObject('YourStorageKey')</span>;</span>
+            <span class="indent other"></span>
+            <span class="indent other"><span class="ice">iceStorage</span>.<span class="special">local</span>.<span class="optional">remove('YourStorageKey')</span>;</span>
+            <span class="other">}</span>
+        </code>
+    </pre>
+
+    <h4>Usage session storage</h4>
+
+    <pre>
+        <code>
+            <span class="other">if (<span class="ice">iceStorage</span>.<span class="special">session</span>.<span class="optional">isSupported()</span>) {</span>
+            <span class="indent other"></span>
+            <span class="indent other"><span class="ice">iceStorage</span>.<span class="special">session</span>.<span class="optional">set('YourStorageKey', 'some string')</span>;</span>
+            <span class="indent other">var storageValue = <span class="ice">iceStorage</span>.<span class="special">session</span>.<span class="optional">get('YourStorageKey')</span>;</span>
+            <span class="indent other"></span>
+            <span class="indent other"><span class="ice">iceStorage</span>.<span class="special">session</span>.<span class="optional">setObject('YourStorageKey', {...})</span>;</span>
+            <span class="indent other">var storageObject = <span class="ice">iceStorage</span>.<span class="special">session</span>.<span class="optional">getObject('YourStorageKey')</span>;</span>
+            <span class="indent other"></span>
+            <span class="indent other"><span class="ice">iceStorage</span>.<span class="special">session</span>.<span class="optional">remove('YourStorageKey')</span>;</span>
+            <span class="other">}</span>
         </code>
     </pre>
 </div>

@@ -2,7 +2,7 @@
 
 angular.module('angularIceApp')
     .controller('ExamplesCtrl',
-		function ($scope) {
+		function ($scope, $location, $anchorScroll) {
             $scope.model = {
                 autoSelectDefault: 'some text',
                 autoSelectOtherEvent: 'other text'
@@ -10,6 +10,12 @@ angular.module('angularIceApp')
 
             $scope.helloWorld = function() {
                 return 'Hello ICE !';
+            };
+
+            $scope.goToAnchor = function(anchorId) {
+                $location.hash(anchorId);
+
+                $anchorScroll();
             };
 		}
     );

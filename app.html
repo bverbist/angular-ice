@@ -1,17 +1,18 @@
 <div class="container" ng-controller="NavigationCtrl">
     <div class="header">
         <h1 class="text-muted">
-            <span class="text-blue">angular - ice</span> :
-            <span class="text-orange">examples</span>
+            <span class="text-blue">angular</span> -
+            <span class="text-orange">ice</span>
         </h1>
 
         <button type="button" class="btn btn-warning pull-right" onclick="window.open('https://github.com/bverbist/angular-ice','_blank');">Code on Github</button>
 
         <tabset ng-init="initFirstActiveTab()">
             <tab heading="Installation" ng-click="goTo('/installation')" active="activeTab.installation"></tab>
-            <tab heading="Unit Tester" ng-click="goTo('/unitTester')" active="activeTab.unitTester"></tab>
+            <tab heading="Unit testing" ng-click="goTo('/unitTester')" active="activeTab.unitTester"></tab>
             <tab heading="Form directives" ng-click="goTo('/formDirectives')" active="activeTab.formDirectives"></tab>
             <tab heading="Services" ng-click="goTo('/services')" active="activeTab.services"></tab>
+            <tab heading="releases" ng-click="goTo('/releases')" active="activeTab.releases"></tab>
         </tabset>
     </div>
 

@@ -10,8 +10,8 @@ describe('ExamplesCtrl:', function() {
         });
 
         var buildController = function() {
-            $scope = iceUnitTester
-                .controllerScopeBuilder('angularIceApp', 'ExamplesCtrl')
+            $scope = iceUnit.builder
+                .controllerScope('angularIceApp', 'ExamplesCtrl')
                 .skipModuleLoad()
                 .build();
         };
@@ -27,8 +27,8 @@ describe('ExamplesCtrl:', function() {
 
     describe('after init:', function() {
         beforeEach(function() {
-            $scope = iceUnitTester
-                .controllerScopeBuilder('angularIceApp', 'ExamplesCtrl')
+            $scope = iceUnit.builder
+                .controllerScope('angularIceApp', 'ExamplesCtrl')
                 .build();
         });
 
@@ -36,6 +36,15 @@ describe('ExamplesCtrl:', function() {
             var actual = $scope.helloWorld();
 
             expect(actual).toBe('Hello ICE !');
+        });
+
+        it('goToAnchor() sets the location hash to the input id and calls $anchorScroll()', function() {
+            var $location = iceUnit.inject('$location');
+            spyOn($location, 'hash');
+
+            $scope.goToAnchor('someId');
+
+            expect($location.hash).toHaveBeenCalledWith('someId');
         });
     });
 

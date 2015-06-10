@@ -7,7 +7,8 @@ angular.module('angularIceApp')
                 installation: false,
                 unitTester: false,
                 formDirectives: false,
-                services: false
+                services: false,
+                releases: false
             };
 
             $scope.initFirstActiveTab = function() {
