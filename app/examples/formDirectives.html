@@ -1,5 +1,13 @@
 <form name="$parent.examplesForm" id="examples" autocomplete="on" novalidate>
-    <h3 class="text-blue">ice-auto-select-content-on</h3>
+    <h4>Available</h4>
+    <ul>
+        <li><a ng-click="goToAnchor('autoSelect')">ice-auto-select-content-on</a></li>
+        <li><a ng-click="goToAnchor('bankAccountNr')">ice-bank-account-number</a></li>
+    </ul>
+
+    <hr/>
+
+    <h3 class="text-blue" id="autoSelect">ice-auto-select-content-on</h3>
 
     <h4>Directive Info</h4>
 
@@ -10,6 +18,8 @@
     <p>0.1.0</p>
 
     <h4>Usage</h4>
+
+    <p>Needed module (app dependency): <b>ice.forms</b></p>
 
     <pre>
         <code>
@@ -71,4 +81,53 @@
                ice-auto-select-content-on="mouseover"
                ice-deselect-event="mouseout">
     </p>
+
+    <hr/>
+
+    <h3 class="text-blue" id="bankAccountNr">ice-bank-account-number</h3>
+
+    <h4>Directive Info</h4>
+
+    <p>A bank-account-number input field that allows both BBAN and IBAN numbers.<br/>
+        Based on the input (BBAN, Belgian IBAN or International IBAN):
+        <ul>
+            <li>The field content will be formatted differently</li>
+            <li>Other characters will be filteroud out during input (e.g. BBAN only allows digits)</li>
+        </ul></p>
+
+    <h4>Available since</h4>
+
+    <p>0.5.0</p>
+
+    <h4>Usage</h4>
+
+    <p>Needed module (app dependency): <b>ice.bank</b></p>
+
+    <pre>
+        <code>
+            <span class="tag">&lt;input type="text"</span>
+            <span class="indent other">ng-model="someModelVar"</span>
+            <span class="indent other">...</span>
+            <span class="indent ice">ice-bank-account-number</span>
+            <span class="indent ice">ng-trim="false"</span>
+            <span class="indent optional">style="letter-spacing: 2px;"</span>
+            <span class="indent other">...</span>
+            <span class="tag">&lt;/input&gt;</span>
+        </code>
+    </pre>
+
+    <h4>Example</h4>
+
+    <p><label>BBAN or IBAN</label>
+        <input class="form-control"
+               type="text"
+               name="bankAccountNumber"
+               ng-model="model.bankAccountNr"
+               tabindex="3"
+               ice-bank-account-number
+               ng-trim="false"
+               style="letter-spacing: 2px; width: 100%;">
+        See the difference when inputting either "a numeric", "BE" or "an alphabetic" as the first character(s).
+    </p>
+
 </form>
