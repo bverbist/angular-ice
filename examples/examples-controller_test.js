@@ -22,6 +22,7 @@ describe('ExamplesCtrl:', function() {
             expect($scope.model).toBeDefined();
             expect($scope.model.autoSelectDefault).toBeDefined();
             expect($scope.model.autoSelectOtherEvent).toBeDefined();
+            expect($scope.model.bankAccountNr).toBeDefined();
         });
     });
 

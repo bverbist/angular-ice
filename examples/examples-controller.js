@@ -5,7 +5,8 @@ angular.module('angularIceApp')
 		function ($scope, $location, $anchorScroll) {
             $scope.model = {
                 autoSelectDefault: 'some text',
-                autoSelectOtherEvent: 'other text'
+                autoSelectOtherEvent: 'other text',
+                bankAccountNr: ''
             };
 
             $scope.helloWorld = function() {
