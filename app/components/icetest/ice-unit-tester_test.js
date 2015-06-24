@@ -2,6 +2,10 @@
 var iceUnit = (function() {
     'use strict';
 
+    function isFunction(value){
+        return typeof value === 'function';
+    }
+
     var injectService = function(serviceName) {
         var service;
         angular.mock.inject(function($injector) {
@@ -30,13 +34,15 @@ var iceUnit = (function() {
         return function() {
             var promiseMock = getPromiseMock(callbackObject)();
 
+            promiseMock.error = function(errorCallback) {
+                callbackObject.error = errorCallback;
+            };
+
             promiseMock.success = function(successCallback) {
                 callbackObject.success = successCallback;
 
                 return {
-                    error: function(errorCallback) {
-                        callbackObject.error = errorCallback;
-                    }
+                    error: promiseMock.error
                 };
             };
 
@@ -64,32 +70,49 @@ var iceUnit = (function() {
         //for non-GET 'class' actions:
         //    return function ([paramObject], postData, [successCallback], [errorCallback]) {}
 
-        return function (a0, a1, a2, a3) {
-            //switch(arguments.length) {
-            //    case 4:
-            //        successCallback = a2;
-            //        errorCallback = a3;
-            //        break;
-            //    case 3:
-            //        break;
-            //    case 2:
-            //        break;
-            //    case 1:
-            //        break;
-            //    case 0:
-            //        break;
-            //}
-
-            //var paramObject = a0;
+        return function (a1, a2, a3, a4) {
             var successCallback, errorCallback;
-            if (isPayload) {
-                //var postData = a1;
-                successCallback = a2;
-                errorCallback = a3;
-            } else {
-                successCallback = a1;
-                errorCallback = a2;
+
+            /* jshint -W086 */ /* (purposefully fall through case statements) */
+            switch(arguments.length) {
+                case 4:
+                    successCallback = a3;
+                    errorCallback = a4;
+                    break;
+                case 3:
+                    //fallthrough
+                case 2:
+                    if (isFunction(a2)) {
+                        if (isFunction(a1)) {
+                            successCallback = a1;
+                            errorCallback = a2;
+                            break;
+                        }
+
+                        successCallback = a2;
+                        errorCallback = a3;
+                        //fallthrough
+                    } else {
+                        //paramObject = a1;
+                        //postData = a2;
+                        successCallback = a3;
+                        break;
+                    }
+                case 1:
+                    if (isFunction(a1)) {
+                        successCallback = a1;
+                    }
+                    //else if (isPayload) {
+                    //    postData = a1;
+                    //}
+                    //else {
+                    //    paramObject = a1;
+                    //}
+                    break;
+                case 0:
+                    break;
             }
+            /* jshint +W086 */ /* (purposefully fall through case statements) */
 
             var resultReferenceObject;
             if (isArray) {
