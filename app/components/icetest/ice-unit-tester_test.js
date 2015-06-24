@@ -52,7 +52,7 @@ var iceUnit = (function() {
         });
     };
 
-    var getResourceActionMock = function(isArray, isPayload, callbackObject, actionName, isInstanceCall) {
+    var getResourceActionMock = function(isArray, isPayload, callbackObject, actionName, ResourceMock, isInstanceCall) {
         if (typeof isInstanceCall === 'undefined') {
             isInstanceCall = false;
         }
@@ -101,10 +101,10 @@ var iceUnit = (function() {
                 resultReferenceObject.$resolved = false;
             }
 
-            if (!isInstanceCall && !isArray) {
-                ResourceMock.prototype.$save = getResourceActionMock(false, false, callbackObject, '$save', true);
-                ResourceMock.prototype.$remove = getResourceActionMock(false, false, callbackObject, '$remove', true);
-                ResourceMock.prototype.$delete = getResourceActionMock(false, false, callbackObject, '$delete', true);
+            if (!isInstanceCall) {
+                ResourceMock.prototype.$save = getResourceActionMock(false, false, callbackObject, '$save', ResourceMock, true);
+                ResourceMock.prototype.$remove = getResourceActionMock(false, false, callbackObject, '$remove', ResourceMock, true);
+                ResourceMock.prototype.$delete = getResourceActionMock(false, false, callbackObject, '$delete', ResourceMock, true);
             }
 
             callbackObject[actionName].success = function(value, responseHeaders) {
@@ -118,7 +118,6 @@ var iceUnit = (function() {
 
                 if (typeof successCallback !== 'undefined') {
                     successCallback(value, responseHeaders);
-
                 }
             };
 
@@ -255,8 +254,6 @@ var iceUnit = (function() {
         };
     };
 
-    function ResourceMock() {}
-
     function ResourceMockBuilder(callbackObject) {
         this.actions = [
             {name: 'get', isArray: false, isPayload: false},
@@ -266,6 +263,7 @@ var iceUnit = (function() {
             {name: 'delete', isArray: false, isPayload: true}
         ];
         this.callbackObject = callbackObject;
+        this.ResourceMock = function() {};
     }
 
     ResourceMockBuilder.prototype.withCustomAction = function(actionName, isArray, isPayload) {
@@ -276,17 +274,17 @@ var iceUnit = (function() {
     ResourceMockBuilder.prototype.build = function() {
         if (this.actions.length > 0) {
 
-            ResourceMock.prototype.$save = getResourceActionMock(false, false, this.callbackObject, '$save', true);
-            ResourceMock.prototype.$remove = getResourceActionMock(false, false, this.callbackObject, '$remove', true);
-            ResourceMock.prototype.$delete = getResourceActionMock(false, false, this.callbackObject, '$delete', true);
+            this.ResourceMock.prototype.$save = getResourceActionMock(false, false, this.callbackObject, '$save', this.ResourceMock, true);
+            this.ResourceMock.prototype.$remove = getResourceActionMock(false, false, this.callbackObject, '$remove', this.ResourceMock, true);
+            this.ResourceMock.prototype.$delete = getResourceActionMock(false, false, this.callbackObject, '$delete', this.ResourceMock, true);
 
             var _this = this;
             this.actions.forEach(function(action) {
-                ResourceMock[action.name] = getResourceActionMock(action.isArray, action.isPayload, _this.callbackObject, action.name);
+                _this.ResourceMock[action.name] = getResourceActionMock(action.isArray, action.isPayload, _this.callbackObject, action.name, _this.ResourceMock);
             });
         }
 
-        return ResourceMock;
+        return this.ResourceMock;
     };
 
     function ResourceActionMockBuilder(actionName, callbackObject) {
@@ -294,6 +292,7 @@ var iceUnit = (function() {
         this.callbackObject = callbackObject;
         this.isArray = false;
         this.isPayload = false;
+        this.ResourceMock = function() {};
     }
 
     ResourceActionMockBuilder.prototype.acceptsPayload = function(isPayload) {
@@ -313,7 +312,7 @@ var iceUnit = (function() {
     };
 
     ResourceActionMockBuilder.prototype.build = function() {
-        return getResourceActionMock(this.isArray, this.isPayload, this.callbackObject, this.actionName);
+        return getResourceActionMock(this.isArray, this.isPayload, this.callbackObject, this.actionName, this.ResourceMock);
     };
 
     var builder = {
