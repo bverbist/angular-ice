@@ -116,13 +116,18 @@ var iceUnit = (function() {
 
                 resultReferenceObject.$resolved = true;
 
-                successCallback(value, responseHeaders);
+                if (typeof successCallback !== 'undefined') {
+                    successCallback(value, responseHeaders);
+
+                }
             };
 
             callbackObject[actionName].error = function(httpResponse) {
                 resultReferenceObject.$resolved = true;
 
-                errorCallback(httpResponse);
+                if (typeof errorCallback !== 'undefined') {
+                    errorCallback(httpResponse);
+                }
             };
 
             resultReferenceObject.$promise = getPromiseMock(callbackObject[actionName])();
