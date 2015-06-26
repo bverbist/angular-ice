@@ -352,8 +352,9 @@
             <span class="indent2 other"> *   actionName: must match your custom $resource action + will be used to store the success/error callbacks on the callbackObject</span>
             <span class="indent2 other"> *   isArray: boolean - If true then the returned object for this action is an array, otherwise an object</span>
             <span class="indent2 other"> *   isPayload: boolean - Use true if action can receive payload, so use false for GET actions</span>
+            <span class="indent2 other"> *   hasInstanceAction: boolean - Use true if you want the action also to be available as an instance action ('$' will be prefixed automatically)</span>
             <span class="indent2 other"> */</span>
-            <span class="indent2 optional">.withCustomAction('actionName', &lt;isArray&gt;, &lt;isPayload&gt;)</span>
+            <span class="indent2 optional">.withCustomAction('actionName', &lt;isArray&gt;, &lt;isPayload&gt;, &lt;hasInstanceAction&gt;)</span>
             <span class="indent2 other"></span>
             <span class="indent2 ice">.build();</span>
         </code>
