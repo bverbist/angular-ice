@@ -125,9 +125,12 @@ var iceUnit = (function() {
             }
 
             if (!isInstanceCall) {
-                ResourceMock.prototype.$save = getResourceActionMock(false, false, callbackObject, '$save', ResourceMock, true);
-                ResourceMock.prototype.$remove = getResourceActionMock(false, false, callbackObject, '$remove', ResourceMock, true);
-                ResourceMock.prototype.$delete = getResourceActionMock(false, false, callbackObject, '$delete', ResourceMock, true);
+                if (typeof ResourceMock.prototype.$save !== 'function') {
+                    // add these if not already added by ResourceMockBuilder.build (see ResourceActionMockBuilder)
+                    ResourceMock.prototype.$save = getResourceActionMock(false, false, callbackObject, '$save', ResourceMock, true);
+                    ResourceMock.prototype.$remove = getResourceActionMock(false, false, callbackObject, '$remove', ResourceMock, true);
+                    ResourceMock.prototype.$delete = getResourceActionMock(false, false, callbackObject, '$delete', ResourceMock, true);
+                }
             }
 
             callbackObject[actionName].success = function(value, responseHeaders) {
@@ -279,31 +282,31 @@ var iceUnit = (function() {
 
     function ResourceMockBuilder(callbackObject) {
         this.actions = [
-            {name: 'get', isArray: false, isPayload: false},
-            {name: 'save', isArray: false, isPayload: true},
-            {name: 'query', isArray: true, isPayload: false},
-            {name: 'remove', isArray: false, isPayload: true},
-            {name: 'delete', isArray: false, isPayload: true}
+            {name: 'get', isArray: false, isPayload: false, hasInstanceAction: false},
+            {name: 'save', isArray: false, isPayload: true, hasInstanceAction: true},
+            {name: 'query', isArray: true, isPayload: false, hasInstanceAction: false},
+            {name: 'remove', isArray: false, isPayload: true, hasInstanceAction: true},
+            {name: 'delete', isArray: false, isPayload: true, hasInstanceAction: true}
         ];
         this.callbackObject = callbackObject;
         this.ResourceMock = function() {};
     }
 
-    ResourceMockBuilder.prototype.withCustomAction = function(actionName, isArray, isPayload) {
-        this.actions.push({name: actionName, isArray: isArray, isPayload: isPayload});
+    ResourceMockBuilder.prototype.withCustomAction = function(actionName, isArray, isPayload, hasInstanceAction) {
+        this.actions.push({name: actionName, isArray: isArray, isPayload: isPayload, hasInstanceAction: hasInstanceAction});
         return this;
     };
 
     ResourceMockBuilder.prototype.build = function() {
         if (this.actions.length > 0) {
 
-            this.ResourceMock.prototype.$save = getResourceActionMock(false, false, this.callbackObject, '$save', this.ResourceMock, true);
-            this.ResourceMock.prototype.$remove = getResourceActionMock(false, false, this.callbackObject, '$remove', this.ResourceMock, true);
-            this.ResourceMock.prototype.$delete = getResourceActionMock(false, false, this.callbackObject, '$delete', this.ResourceMock, true);
-
             var _this = this;
             this.actions.forEach(function(action) {
-                _this.ResourceMock[action.name] = getResourceActionMock(action.isArray, action.isPayload, _this.callbackObject, action.name, _this.ResourceMock);
+                _this.ResourceMock[action.name] = getResourceActionMock(action.isArray, action.isPayload, _this.callbackObject, action.name, _this.ResourceMock, false);
+
+                if (action.hasInstanceAction) {
+                    _this.ResourceMock.prototype['$' + action.name] = getResourceActionMock(action.isArray, action.isPayload, _this.callbackObject, '$' + action.name, _this.ResourceMock, true);
+                }
             });
         }
 
