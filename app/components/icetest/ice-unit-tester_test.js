@@ -205,7 +205,9 @@ var iceUnit = (function() {
         if (this.parentScope === null) {
             $scope = $rootScope.$new();
         } else {
-            $scope = this.parentScope;
+            var $parent = $rootScope.$new();
+            angular.extend($parent, this.parentScope);
+            $scope = $parent.$new();
         }
 
         this.injectionLocals.$scope = $scope;
