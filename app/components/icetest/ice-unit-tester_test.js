@@ -34,6 +34,9 @@ var iceUnit = (function() {
         return function() {
             var promiseMock = getPromiseMock(callbackObject)();
 
+            callbackObject.success = function() {};
+            callbackObject.error = function() {};
+
             promiseMock.error = function(errorCallback) {
                 callbackObject.error = errorCallback;
             };
@@ -282,6 +285,30 @@ var iceUnit = (function() {
         };
     };
 
+    function FilterBuilder(moduleName, filterName) {
+        this.moduleName = moduleName;
+        this.filterName = filterName;
+        this.provideValues = [];
+    }
+
+    FilterBuilder.prototype.withMock = function(injectKey, mock) {
+        this.provideValues.push({injectKey: injectKey, mock: mock});
+        return this;
+    };
+
+    FilterBuilder.prototype.build = function() {
+        var _this = this;
+        angular.mock.module(this.moduleName, function($provide) {
+            if (_this.provideValues.length > 0) {
+                _this.provideValues.forEach(function(provideVal) {
+                    $provide.value(provideVal.injectKey, provideVal.mock);
+                });
+            }
+        });
+
+        return injectService(this.filterName + 'Filter');
+    };
+
     function ResourceMockBuilder(callbackObject) {
         this.actions = [
             {name: 'get', isArray: false, isPayload: false, hasInstanceAction: false},
@@ -370,6 +397,15 @@ var iceUnit = (function() {
                 return undefined;
             }
             return new DirectiveBuilder(moduleName, elementHtml);
+        },
+        filter: function(moduleName, filterName) {
+            if (typeof moduleName === 'undefined') {
+                return undefined;
+            }
+            if (typeof filterName === 'undefined') {
+                return undefined;
+            }
+            return new FilterBuilder(moduleName, filterName);
         },
         $resourceMock: function(callbackObject) {
             if (typeof callbackObject === 'undefined') {

@@ -363,6 +363,16 @@ describe('iceDummy:', function() {
 
             expect($log.error).toHaveBeenCalledWith('getCurrentWeather failed - status: 404 - data: backend down');
         });
+
+        it('also works if nog success callback registered on http promise', function() {
+            iceDummy.logCurrentWeatherWithoutSuccessCallback();
+
+            expect(iceDummyResource.getCurrentWeather).toHaveBeenCalledWith('Leuven', 'be');
+
+            promiseCallBacker.success();
+
+            expect($log.info).not.toHaveBeenCalled();
+        });
     });
 
     var validCurrentWeather = {

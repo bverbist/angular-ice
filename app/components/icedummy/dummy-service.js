@@ -19,6 +19,14 @@ angular
                 });
         };
 
+        var logCurrentWeatherWithoutSuccessCallback = function() {
+            iceDummyResource
+                .getCurrentWeather(CITY_NAME, COUNTRY_CODE)
+                .error(function(data, status) {
+                    $log.error('getCurrentWeather failed - status: ' + status + ' - data: ' + data);
+                });
+        };
+
         var currentWeatherByReferenceObject = iceDummyResource.currentWeatherResource.get({
             cityName: CITY_NAME,
             countryCode: COUNTRY_CODE
@@ -108,6 +116,7 @@ angular
 
         return {
             logCurrentWeather: logCurrentWeather,
+            logCurrentWeatherWithoutSuccessCallback: logCurrentWeatherWithoutSuccessCallback,
             currentWeatherByReferenceObject: currentWeatherByReferenceObject,
             doCurrentWeatherByReferenceObjectDelete: doCurrentWeatherByReferenceObjectDelete,
             currentWeatherSave: currentWeatherSave,

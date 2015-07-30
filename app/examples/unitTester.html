@@ -8,6 +8,7 @@
         <li><a ng-click="goToAnchor('controller')">testing a controller</a> [since 0.2.0]</li>
         <li><a ng-click="goToAnchor('service')">testing a service</a> [0.2.0]</li>
         <li><a ng-click="goToAnchor('directive')">testing a directive</a> [0.2.0]</li>
+        <li><a ng-click="goToAnchor('filter')">testing a filter</a> [0.6.1]</li>
         <li><a ng-click="goToAnchor('inject')">injecting a service</a> [0.2.0]</li>
         <li><a ng-click="goToAnchor('mockPromise')">mocking a promise</a> [0.2.0]</li>
         <li><a ng-click="goToAnchor('mockHttpPromise')">mocking a $http promise</a> [0.2.0]</li>
@@ -129,6 +130,37 @@
             <span class="indent other"></span>
             <span class="indent other">it('some directive test', function() {</span>
             <span class="indent2 special">element. ...</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <h4 id="filter">Testing a filter</h4>
+
+    <p>Angular automatically appends 'Filter' to the name of your filter provider, e.g. for the filter 'personFilter' you would have to inject 'personFilter<b>Filter</b>' to unit test the filter.<br/>
+        But iceTest covers that automatically.
+    </p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('yourFilter:', function() {</span>
+            <span class="indent ice">var yourFilter;</span>
+            <span class="indent other"></span>
+            <span class="indent special">var logMock = {</span>
+            <span class="indent2 special">info: function() {}
+            <span class="indent special">};</span>
+            <span class="indent other"></span>
+            <span class="indent special">beforeEach(function() {</span>
+            <span class="indent2 ice">yourFilter = iceUnit.builder</span>
+            <span class="indent4 ice">.filter(</span><span class="special">'FilterModule', 'yourFilter'</span><span class="ice">)</span>
+            <span class="indent4 optional">[.withMock('$log', logMock)]</span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent special">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('does something to the input', function() {</span>
+            <span class="indent2 other">expect(<span class="ice">yourFilter(<span class="optional">&lt;filterInput&gt;</span>)</span>).toBe(<span class="optional">&lt;filterResult&gt;</span>);</span>
             <span class="indent other">});</span>
             <span class="other">});</span>
         </code>
