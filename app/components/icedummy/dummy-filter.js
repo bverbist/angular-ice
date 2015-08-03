@@ -5,6 +5,6 @@ angular
     .filter('iceDummyFilter', function($log) {
         return function(input) {
             $log.info('Exclamating ' + input + ' ...');
-            return input + " !!!"
+            return input + ' !!!';
         };
     });

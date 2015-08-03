@@ -285,6 +285,33 @@ var iceUnit = (function() {
         };
     };
 
+    function DirectiveConfigBuilder(moduleName, directiveName) {
+        this.moduleName = moduleName;
+        this.directiveName = directiveName;
+        this.provideValues = [];
+    }
+
+    DirectiveConfigBuilder.prototype.withMock = function(injectKey, mock) {
+        this.provideValues.push({injectKey: injectKey, mock: mock});
+        return this;
+    };
+
+    DirectiveConfigBuilder.prototype.build = function() {
+        var _this = this;
+        angular.mock.module(this.moduleName, function($provide) {
+            if (_this.provideValues.length > 0) {
+                _this.provideValues.forEach(function(provideVal) {
+                    $provide.value(provideVal.injectKey, provideVal.mock);
+                });
+            }
+        });
+
+        var directiveArray = injectService(this.directiveName + 'Directive');
+        var directive = directiveArray[0];
+
+        return directive;
+    };
+
     function FilterBuilder(moduleName, filterName) {
         this.moduleName = moduleName;
         this.filterName = filterName;
@@ -397,6 +424,15 @@ var iceUnit = (function() {
                 return undefined;
             }
             return new DirectiveBuilder(moduleName, elementHtml);
+        },
+        directiveConfig: function(moduleName, directiveName) {
+            if (typeof moduleName === 'undefined') {
+                return undefined;
+            }
+            if (typeof directiveName === 'undefined') {
+                return undefined;
+            }
+            return new DirectiveConfigBuilder(moduleName, directiveName);
         },
         filter: function(moduleName, filterName) {
             if (typeof moduleName === 'undefined') {
