@@ -8,6 +8,7 @@
         <li><a ng-click="goToAnchor('controller')">testing a controller</a> [since 0.2.0]</li>
         <li><a ng-click="goToAnchor('service')">testing a service</a> [0.2.0]</li>
         <li><a ng-click="goToAnchor('directive')">testing a directive</a> [0.2.0]</li>
+        <li><a ng-click="goToAnchor('directiveConfig')">testing a directive configuration</a> [0.7.0]</li>
         <li><a ng-click="goToAnchor('filter')">testing a filter</a> [0.6.1]</li>
         <li><a ng-click="goToAnchor('inject')">injecting a service</a> [0.2.0]</li>
         <li><a ng-click="goToAnchor('mockPromise')">mocking a promise</a> [0.2.0]</li>
@@ -109,6 +110,13 @@
 
     <h4 id="directive">Testing a directive</h4>
 
+    <p>Based on your needs, iceUnit offers two options for testing a directive:<br/>
+        <ol>
+            <li><b>iceUnit.builder.directive:</b> to test your directive by supplying a html snippet (recommended in most cases as this is more an 'integration' test)</li>
+            <li><b>iceUnit.builder.directiveConfig:</b> to unit test the configuration/setup of your directive. This offers also the possibility to directly test the directive's link method.</li>
+        </ol>
+    </p>
+
     <pre>
         <code>
             <span class="other">'use strict';</span>
@@ -130,6 +138,36 @@
             <span class="indent other"></span>
             <span class="indent other">it('some directive test', function() {</span>
             <span class="indent2 special">element. ...</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <h4 id="directiveConfig">Testing a directive configuration</h4>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('yourDirective:', function() {</span>
+            <span class="indent ice">var yourDirective;</span>
+            <span class="indent other"></span>
+            <span class="indent special">beforeEach(function () {</span>
+            <span class="indent2 ice">yourDirective = iceUnit.builder</span>
+            <span class="indent4 ice">.directiveConfig(<span class="special">&lt;directive module&gt;</span>, <span class="special">'yourDirective'</span>)</span>
+            <span class="indent4 optional">[.withMock(&lt;injectKey&gt;, &lt;mock&gt;)]</span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent special">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('is configured as an attribute name', function() {</span>
+            <span class="indent2 other">expect(<span class="ice">yourDirective</span>.<span class="special">restrict</span>).toBe('A');</span>
+            <span class="indent other">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('some other test based on the link method', function() {</span>
+            <span class="indent2 other">var scope = {};</span>
+            <span class="indent2 other"><span class="ice">yourDirective</span>.<span class="special">link</span>(scope);</span>
+            <span class="indent2 other"></span>
+            <span class="indent2 other">expect(scope. ...). ...</span>
             <span class="indent other">});</span>
             <span class="other">});</span>
         </code>
