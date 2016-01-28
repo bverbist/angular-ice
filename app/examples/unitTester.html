@@ -386,26 +386,29 @@
 
     <pre>
         <code>
-            <span class="ice">// !! the current iceTest version [0.4.0] supports these methods only when they are called in your code with all parameters !!</span>
+            <span class="other">// prior to iceTest version [0.5.3] these <span class="ice">methods</span> are only supported when they are called in your code with all parameters</span>
             <span class="ice">.get<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.save<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
             <span class="ice">.query<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.remove<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
             <span class="ice">.delete<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
             <span class="other"></span>
-            <span class="ice">// instance methods</span>
+            <span class="other">// instance methods</span>
             <span class="ice">.$save<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.$remove<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.$delete<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="other"></span>
-            <span class="special">// the callback functions are stored in the input callbackObject within an object named after the $resource method</span>
-            <span class="special">// e.g. callbacks for the 'get', 'save' and '$delete' methods</span>
+            <span class="other">// The <span class="special">success and error callback functions are stored in the input callbackObject</span> <span class="ice">within an object named after the $resource method</span></span>
+            <span class="other">//   e.g. callbacks for the 'get', 'save' and '$delete' methods</span>
+            <span class="other">// The <span class="optional">payload</span>/postData of non-GET actions is also stored in the same <span class="ice">method object</span> (so payload can be verified in your tests)</span>
             <span class="special">callbackObject<span class="ice">.get</span>.success</span>
             <span class="special">callbackObject<span class="ice">.get</span>.error</span>
             <span class="special">callbackObject<span class="ice">.save</span>.success</span>
             <span class="special">callbackObject<span class="ice">.save</span>.error</span>
+            <span class="special">callbackObject<span class="ice">.save</span>.<span class="optional">payload</span></span>
             <span class="special">callbackObject<span class="ice">.$delete</span>.success</span>
             <span class="special">callbackObject<span class="ice">.$delete</span>.error</span>
+            <span class="special">callbackObject<span class="ice">.$delete</span>.<span class="optional">payload</span></span>
             <span class="special">etc.</span>
         </code>
     </pre>

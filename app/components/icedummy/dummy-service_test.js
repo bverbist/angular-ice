@@ -71,6 +71,10 @@ describe('iceDummy:', function() {
                 expect(argsGetCall[0].countryCode).toBe('be');
             });
 
+            it('does not set payload on the callbacker as it is a get (non-payload) method', function () {
+                expect(currentWeatherResourceCallBacker.get.payload).toBeUndefined();
+            });
+
             it('is populated with the return data on success', function() {
                 var successValue = {
                     someField: 'some data'
@@ -103,7 +107,7 @@ describe('iceDummy:', function() {
         });
 
         describe('var currentWeatherSave:', function() {
-            it('also postData passed in save call (vs. get)', function() {
+            it('also payload passed in save call (vs. get) + puts payload on callbacker', function() {
                 expect(iceDummy.currentWeatherSave.$promise).toBeDefined();
                 expect(iceDummy.currentWeatherSave.$resolved).toBe(false);
                 expect(iceDummy.currentWeatherSave.someField).toBeUndefined();
@@ -117,6 +121,8 @@ describe('iceDummy:', function() {
                 expect(argsSaveCall[0].countryCode).toBe('be');
 
                 expect(argsSaveCall[1].saveField).toBe('save value');
+
+                expect(currentWeatherResourceCallBacker.save.payload.saveField).toBe('save value');
             });
 
             it('is populated with the return data on success', function() {
@@ -157,6 +163,17 @@ describe('iceDummy:', function() {
                 expect(iceDummy.getCurrentWeatherNew().$delete).toBeDefined();
 
                 expect(iceDummy.getCurrentWeatherNew().someField).toBeUndefined();
+            });
+
+            it('puts the payload on the callbacker', function () {
+                iceDummy.getCurrentWeatherNew().someField = 'some value';
+                iceDummy.getCurrentWeatherNew().otherField = 'other value';
+                expect(currentWeatherResourceCallBacker.$save.payload).toBeUndefined();
+
+                iceDummy.doCurrentWeatherNewSave();
+
+                expect(currentWeatherResourceCallBacker.$save.payload.someField).toBe('some value');
+                expect(currentWeatherResourceCallBacker.$save.payload.otherField).toBe('other value');
             });
 
             it('is populated with the return data on $save success', function() {

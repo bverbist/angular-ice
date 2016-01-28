@@ -71,17 +71,17 @@ var iceUnit = (function() {
         //for GET actions (and non-GET instance actions):
         //    return function ([paramObject], [successCallback], [errorCallback]) {}
         //for non-GET 'class' actions:
-        //    return function ([paramObject], postData, [successCallback], [errorCallback]) {}
+        //    return function ([paramObject], payload, [successCallback], [errorCallback]) {}
 
         return function (a1, a2, a3, a4) {
-            var successCallback, errorCallback;
+            var paramObject, payload, successCallback, errorCallback;
 
             /* jshint -W086 */ /* (purposefully fall through case statements) */
             switch(arguments.length) {
                 case 4:
                     successCallback = a3;
                     errorCallback = a4;
-                    break;
+                    //fallthrough
                 case 3:
                     //fallthrough
                 case 2:
@@ -96,21 +96,20 @@ var iceUnit = (function() {
                         errorCallback = a3;
                         //fallthrough
                     } else {
-                        //paramObject = a1;
-                        //postData = a2;
+                        paramObject = a1;
+                        payload = a2;
                         successCallback = a3;
                         break;
                     }
                 case 1:
                     if (isFunction(a1)) {
                         successCallback = a1;
+                    } else if (isPayload) {
+                        payload = a1;
                     }
-                    //else if (isPayload) {
-                    //    postData = a1;
-                    //}
-                    //else {
-                    //    paramObject = a1;
-                    //}
+                    else {
+                        paramObject = a1;
+                    }
                     break;
                 case 0:
                     break;
@@ -134,6 +133,13 @@ var iceUnit = (function() {
                     ResourceMock.prototype.$remove = getResourceActionMock(false, false, callbackObject, '$remove', ResourceMock, true);
                     ResourceMock.prototype.$delete = getResourceActionMock(false, false, callbackObject, '$delete', ResourceMock, true);
                 }
+            }
+
+            if (isPayload) {
+                callbackObject[actionName].payload = payload;
+            }
+            if (isInstanceCall) {
+                callbackObject[actionName].payload = this;
             }
 
             callbackObject[actionName].success = function(value, responseHeaders) {
