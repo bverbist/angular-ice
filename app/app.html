@@ -7,13 +7,13 @@
 
         <button type="button" class="btn btn-warning pull-right" onclick="window.open('https://github.com/bverbist/angular-ice','_blank');">Code on Github</button>
 
-        <tabset ng-init="initFirstActiveTab()">
-            <tab heading="Installation" ng-click="goTo('/installation')" active="activeTab.installation"></tab>
-            <tab heading="Unit testing" ng-click="goTo('/unitTester')" active="activeTab.unitTester"></tab>
-            <tab heading="Form directives" ng-click="goTo('/formDirectives')" active="activeTab.formDirectives"></tab>
-            <tab heading="Services" ng-click="goTo('/services')" active="activeTab.services"></tab>
-            <tab heading="releases" ng-click="goTo('/releases')" active="activeTab.releases"></tab>
-        </tabset>
+        <uib-tabset ng-init="initFirstActiveTab()">
+            <uib-tab heading="Installation" ng-click="goTo('/installation')" active="activeTab.installation"></uib-tab>
+            <uib-tab heading="Unit testing" ng-click="goTo('/unitTester')" active="activeTab.unitTester"></uib-tab>
+            <uib-tab heading="Form directives" ng-click="goTo('/formDirectives')" active="activeTab.formDirectives"></uib-tab>
+            <uib-tab heading="Services" ng-click="goTo('/services')" active="activeTab.services"></uib-tab>
+            <uib-tab heading="releases" ng-click="goTo('/releases')" active="activeTab.releases"></uib-tab>
+        </uib-tabset>
     </div>
 
     <div ng-view=""></div>

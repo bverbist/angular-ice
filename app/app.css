@@ -15,12 +15,12 @@
 }
 
 #examples h3 {
-    padding-top: 15px;
+    padding-top: 20px;
     padding-bottom: 5px;
 }
 
 #examples h4 {
-    padding-top: 15px;
+    padding-top: 20px;
 }
 
 #examples p {
@@ -29,6 +29,7 @@
 
 #examples pre {
     padding: 0px;
+    margin-bottom: 30px;
     spacing: 0px;
 }
 
