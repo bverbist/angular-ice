@@ -11,23 +11,28 @@ angular
         $routeProvider
             .when('/installation', {
                 templateUrl: 'examples/installation.html',
-                controller: 'ExamplesCtrl'
+                controller: 'ExamplesCtrl',
+                controllerAs: 'examples'
             })
             .when('/unitTester', {
                 templateUrl: 'examples/unitTester.html',
-                controller: 'ExamplesCtrl'
+                controller: 'ExamplesCtrl',
+                controllerAs: 'examples'
             })
             .when('/formDirectives', {
                 templateUrl: 'examples/formDirectives.html',
-                controller: 'ExamplesCtrl'
+                controller: 'ExamplesCtrl',
+                controllerAs: 'examples'
             })
             .when('/services', {
                 templateUrl: 'examples/services.html',
-                controller: 'ExamplesCtrl'
+                controller: 'ExamplesCtrl',
+                controllerAs: 'examples'
             })
             .when('/releases', {
                 templateUrl: 'examples/releases.html',
-                controller: 'ExamplesCtrl'
+                controller: 'ExamplesCtrl',
+                controllerAs: 'examples'
             })
             .otherwise({
                 redirectTo: '/installation'

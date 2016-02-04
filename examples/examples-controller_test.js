@@ -2,39 +2,46 @@
 
 describe('ExamplesCtrl:', function() {
 
-    var $scope;
-
     describe('on init:', function() {
+        var $scope;
+
         beforeEach(function() {
             angular.mock.module('angularIceApp');
         });
 
         var buildController = function() {
             $scope = iceUnit.builder
-                .controllerScope('angularIceApp', 'ExamplesCtrl')
+                .controllerAs('angularIceApp', 'ExamplesCtrl', 'examples')
                 .skipModuleLoad()
+                .returnScope()
                 .build();
         };
 
         it('some fields are put on the scope', function() {
             buildController();
 
-            expect($scope.model).toBeDefined();
-            expect($scope.model.autoSelectDefault).toBeDefined();
-            expect($scope.model.autoSelectOtherEvent).toBeDefined();
-            expect($scope.model.bankAccountNr).toBeDefined();
+            var vm = $scope.examples;
+            expect(vm).toBeDefined();
+            expect(vm.model).toBeDefined();
+            expect(vm.model.autoSelectDefault).toBeDefined();
+            expect(vm.model.autoSelectOtherEvent).toBeDefined();
+            expect(vm.model.bankAccountNr).toBeDefined();
         });
     });
 
     describe('after init:', function() {
+        var vm;
+
         beforeEach(function() {
-            $scope = iceUnit.builder
-                .controllerScope('angularIceApp', 'ExamplesCtrl')
+            vm = iceUnit.builder
+                .controllerAs('angularIceApp', 'ExamplesCtrl')
                 .build();
         });
 
         it('helloWorld() returns some dummy text', function() {
-            var actual = $scope.helloWorld();
+            expect(vm.model).toBeDefined();
+
+            var actual = vm.helloWorld();
 
             expect(actual).toBe('Hello ICE !');
         });
@@ -43,7 +50,7 @@ describe('ExamplesCtrl:', function() {
             var $location = iceUnit.inject('$location');
             spyOn($location, 'hash');
 
-            $scope.goToAnchor('someId');
+            vm.goToAnchor('someId');
 
             expect($location.hash).toHaveBeenCalledWith('someId');
         });

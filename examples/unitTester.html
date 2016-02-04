@@ -5,23 +5,25 @@
 
     <h4>Available</h4>
     <ul>
-        <li><a ng-click="goToAnchor('controller')">testing a controller</a> [since 0.2.0]</li>
-        <li><a ng-click="goToAnchor('service')">testing a service</a> [0.2.0]</li>
-        <li><a ng-click="goToAnchor('directive')">testing a directive</a> [0.2.0]</li>
-        <li><a ng-click="goToAnchor('directiveConfig')">testing a directive configuration</a> [0.7.0]</li>
-        <li><a ng-click="goToAnchor('filter')">testing a filter</a> [0.6.1]</li>
-        <li><a ng-click="goToAnchor('inject')">injecting a service</a> [0.2.0]</li>
-        <li><a ng-click="goToAnchor('mockPromise')">mocking a promise</a> [0.2.0]</li>
-        <li><a ng-click="goToAnchor('mockHttpPromise')">mocking a $http promise</a> [0.2.0]</li>
-        <li><a ng-click="goToAnchor('mockResource')">mocking a $resource object</a> [0.4.0]</li>
-        <li><a ng-click="goToAnchor('mockResourceAction')">mocking a $resource action</a> [0.4.0]</li>
-        <li><a ng-click="goToAnchor('liveExamples')">live examples</a></li>
+        <li><a ng-click="examples.goToAnchor('controllerScope')">testing a controller ($scope syntax)</a> [since 0.2.0]</li>
+        <li><a ng-click="examples.goToAnchor('controllerAs')">testing a controller (controllerAs syntax)</a> [since 0.8.0]</li>
+        <li><a ng-click="examples.goToAnchor('service')">testing a service</a> [0.2.0]</li>
+        <li><a ng-click="examples.goToAnchor('directive')">testing a directive</a> [0.2.0]</li>
+        <li><a ng-click="examples.goToAnchor('directiveConfig')">testing a directive configuration</a> [0.7.0]</li>
+        <li><a ng-click="examples.goToAnchor('filter')">testing a filter</a> [0.6.1]</li>
+        <li><a ng-click="examples.goToAnchor('inject')">injecting a service</a> [0.2.0]</li>
+        <li><a ng-click="examples.goToAnchor('mockPromise')">mocking a promise</a> [0.2.0]</li>
+        <li><a ng-click="examples.goToAnchor('mockHttpPromise')">mocking a $http promise</a> [0.2.0]</li>
+        <li><a ng-click="examples.goToAnchor('mockResource')">mocking a $resource object</a> [0.4.0]</li>
+        <li><a ng-click="examples.goToAnchor('mockResourceAction')">mocking a $resource action</a> [0.4.0]</li>
+        <li><a ng-click="examples.goToAnchor('liveExamples')">live examples</a></li>
     </ul>
 
     <hr/>
 
-    <h4 id="controller">Testing a controller</h4>
+    <h4 id="controllerScope">Testing a controller ($scope syntax)</h4>
 
+    <p>The 'controllerScope' builder returns the $scope.</p>
     <p>p.s. Example when the 'building' of the controller under test ('YourCtrl') is <u>not</u> done in a beforeEach block, so that you can setup some mocking before the controller is initialised.</p>
 
     <pre>
@@ -43,7 +45,39 @@
             <span class="indent other">it('some scope test', function() {</span>
             <span class="indent2 special">buildController();</span>
             <span class="indent2 other"></span>
-            <span class="indent2 other">expect($scope...).toBe(...);</span>
+            <span class="indent2 other">expect(<span class="ice">$scope.</span>..).toBe(...);</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <h4 id="controllerAs">Testing a controller (controllerAs syntax)</h4>
+
+    <p>The 'controllerAs' builder returns (by default) the view model.<br/>
+        If 'returnScope()' is called on the builder, the $scope is returned instead. By default the var $scope.vm will then contain the 'view model'.
+        By passing the optional 'asName' parameter, the view model varName can be changed.</p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('YourCtrl:', function() {</span>
+            <span class="indent ice">var vm;</span><span class="other"> //view model</span>
+            <span class="indent other"></span>
+            <span class="indent special">beforeEach(function() {</span>
+            <span class="indent2 ice">vm = iceUnit.builder</span>
+            <span class="indent4 ice">.controllerAs(</span><span class="special">&lt;moduleName&gt;, &lt;controllerName&gt;<span class="optional">[, &lt;asName&gt;]</span></span><span class="ice">)</span>
+            <span class="indent4 optional">[.withMock(&lt;injectKey&gt;, &lt;mock&gt;)]</span>
+            <span class="indent4 optional">[.withParentScope({...})]</span>
+            <span class="indent4 optional">[.skipModuleLoad()]</span><span class="indent special">// if you loaded the module already (e.g. to setup mocking)</span>
+            <span class="indent4 optional">[.returnScope()]</span><span class="indent special">// if you want the builder to return the $scope (vs. the view model) (e.g. if you want to test a $watch)</span>
+            <span class="indent5 special">// By default the unitTester puts the 'view model' on $scope.vm</span>
+            <span class="indent5 special">// If the optional <span class="optional">&lt;asName&gt;</span> was provided, the 'view model' will be on $scope.&lt;asName&gt;</span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent special">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('some test', function() {</span>
+            <span class="indent2 other">expect(<span class="ice">vm.</span>..).toBe(...);</span>
             <span class="indent other">});</span>
             <span class="other">});</span>
         </code>
@@ -386,26 +420,29 @@
 
     <pre>
         <code>
-            <span class="ice">// !! the current iceTest version [0.4.0] supports these methods only when they are called in your code with all parameters !!</span>
+            <span class="other">// prior to iceTest version [0.5.3] these <span class="ice">methods</span> are only supported when they are called in your code with all parameters</span>
             <span class="ice">.get<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.save<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
             <span class="ice">.query<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.remove<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
             <span class="ice">.delete<span class="special">([parametersObject], <span class="ice">postData</span>, [successCallback], [errorCallback])</span></span>
             <span class="other"></span>
-            <span class="ice">// instance methods</span>
+            <span class="other">// instance methods</span>
             <span class="ice">.$save<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.$remove<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="ice">.$delete<span class="special">([parametersObject], [successCallback], [errorCallback])</span></span>
             <span class="other"></span>
-            <span class="special">// the callback functions are stored in the input callbackObject within an object named after the $resource method</span>
-            <span class="special">// e.g. callbacks for the 'get', 'save' and '$delete' methods</span>
+            <span class="other">// The <span class="special">success and error callback functions are stored in the input callbackObject</span> <span class="ice">within an object named after the $resource method</span></span>
+            <span class="other">//   e.g. callbacks for the 'get', 'save' and '$delete' methods</span>
+            <span class="other">// The <span class="optional">payload</span>/postData of non-GET actions is also stored in the same <span class="ice">method object</span> (so that the payload can be verified in your tests)</span>
             <span class="special">callbackObject<span class="ice">.get</span>.success</span>
             <span class="special">callbackObject<span class="ice">.get</span>.error</span>
             <span class="special">callbackObject<span class="ice">.save</span>.success</span>
             <span class="special">callbackObject<span class="ice">.save</span>.error</span>
+            <span class="special">callbackObject<span class="ice">.save</span>.<span class="optional">payload</span></span>
             <span class="special">callbackObject<span class="ice">.$delete</span>.success</span>
             <span class="special">callbackObject<span class="ice">.$delete</span>.error</span>
+            <span class="special">callbackObject<span class="ice">.$delete</span>.<span class="optional">payload</span></span>
             <span class="special">etc.</span>
         </code>
     </pre>

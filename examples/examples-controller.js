@@ -2,18 +2,20 @@
 
 angular.module('angularIceApp')
     .controller('ExamplesCtrl',
-		function ($scope, $location, $anchorScroll) {
-            $scope.model = {
+		function ($location, $anchorScroll) {
+            var vm = this;
+
+            vm.model = {
                 autoSelectDefault: 'some text',
                 autoSelectOtherEvent: 'other text',
                 bankAccountNr: ''
             };
 
-            $scope.helloWorld = function() {
+            vm.helloWorld = function() {
                 return 'Hello ICE !';
             };
 
-            $scope.goToAnchor = function(anchorId) {
+            vm.goToAnchor = function(anchorId) {
                 $location.hash(anchorId);
 
                 $anchorScroll();
