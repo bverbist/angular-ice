@@ -178,6 +178,65 @@ var iceUnit = (function() {
         $httpPromise: getHttpPromiseMock
     };
 
+    function ControllerAsBuilder(moduleName, controllerName, asName) {
+        this.moduleName = moduleName;
+        this.controllerName = controllerName;
+        this.asName = asName;
+        this.parentScope = null;
+        this.injectionLocals = {};
+        this.loadModule = true;
+        this.isScopeToBeReturned = false;
+    }
+
+    ControllerAsBuilder.prototype.withMock = function(injectKey, mock) {
+        this.injectionLocals[injectKey] = mock;
+        return this;
+    };
+
+    ControllerAsBuilder.prototype.withParentScope = function(parentScopeObject) {
+        this.parentScope = parentScopeObject;
+        return this;
+    };
+
+    ControllerAsBuilder.prototype.skipModuleLoad = function() {
+        this.loadModule = false;
+        return this;
+    };
+
+    ControllerAsBuilder.prototype.returnScope = function() {
+        this.isScopeToBeReturned = true;
+        return this;
+    };
+
+    ControllerAsBuilder.prototype.build = function() {
+        if (this.loadModule === true) {
+            angular.mock.module(this.moduleName);
+        }
+
+        var $controller = injectService('$controller');
+        var $rootScope = injectService('$rootScope');
+
+        var $scope;
+
+        if (this.parentScope === null) {
+            $scope = $rootScope.$new();
+        } else {
+            var $parent = $rootScope.$new();
+            angular.extend($parent, this.parentScope);
+            $scope = $parent.$new();
+        }
+
+        this.injectionLocals.$scope = $scope;
+
+        $controller(this.controllerName + ' as ' + this.asName, this.injectionLocals);
+
+        if (this.isScopeToBeReturned === true) {
+            return $scope;
+        }
+
+        return $scope[this.asName];
+    };
+
     function ControllerScopeBuilder(moduleName, controllerName) {
         this.moduleName = moduleName;
         this.controllerName = controllerName;
@@ -404,6 +463,18 @@ var iceUnit = (function() {
     };
 
     var builder = {
+        controllerAs: function(moduleName, controllerName, asName) {
+            if (typeof moduleName === 'undefined') {
+                return undefined;
+            }
+            if (typeof controllerName === 'undefined') {
+                return undefined;
+            }
+            if (typeof asName === 'undefined') {
+                asName = 'vm';
+            }
+            return new ControllerAsBuilder(moduleName, controllerName, asName);
+        },
         controllerScope: function(moduleName, controllerName) {
             if (typeof moduleName === 'undefined') {
                 return undefined;

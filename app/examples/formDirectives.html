@@ -1,8 +1,8 @@
 <form name="$parent.examplesForm" id="examples" autocomplete="on" novalidate>
     <h4>Available</h4>
     <ul>
-        <li><a ng-click="goToAnchor('autoSelect')">ice-auto-select-content-on</a></li>
-        <li><a ng-click="goToAnchor('bankAccountNr')">ice-bank-account-number</a></li>
+        <li><a ng-click="examples.goToAnchor('autoSelect')">ice-auto-select-content-on</a></li>
+        <li><a ng-click="examples.goToAnchor('bankAccountNr')">ice-bank-account-number</a></li>
     </ul>
 
     <hr/>
@@ -65,7 +65,7 @@
         <input class="form-control"
                type="text"
                name="autoSelectDefault"
-               ng-model="model.autoSelectDefault"
+               ng-model="examples.model.autoSelectDefault"
                tabindex="1"
                ng-trim="true"
                ice-auto-select-content-on>
@@ -75,7 +75,7 @@
         <input class="form-control"
                type="text"
                name="autoSelectDefault"
-               ng-model="model.autoSelectOtherEvent"
+               ng-model="examples.model.autoSelectOtherEvent"
                tabindex="2"
                ng-trim="true"
                ice-auto-select-content-on="mouseover"
@@ -122,7 +122,7 @@
         <input class="form-control"
                type="text"
                name="bankAccountNumber"
-               ng-model="model.bankAccountNr"
+               ng-model="examples.model.bankAccountNr"
                tabindex="3"
                ice-bank-account-number
                ng-trim="false"

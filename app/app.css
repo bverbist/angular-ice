@@ -58,6 +58,10 @@
     padding-left: 80px;
 }
 
+#examples code .indent5 {
+    padding-left: 100px;
+}
+
 #examples code .ice {
     color: #FF8C00;
 }
