@@ -134,7 +134,7 @@ module.exports = function (grunt) {
                 singleRun: true
             },
             unit: {
-                browsers: ['PhantomJS']
+                browsers: ['Chrome']
             },
             unitAllBrowsers: {
                 browsers: ['Chrome', 'Firefox']
