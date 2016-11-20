@@ -381,7 +381,7 @@ describe('iceDummy:', function() {
             expect($log.error).toHaveBeenCalledWith('getCurrentWeather failed - status: 404 - data: backend down');
         });
 
-        it('also works if nog success callback registered on http promise', function() {
+        it('also works if no success callback registered on http promise', function() {
             iceDummy.logCurrentWeatherWithoutSuccessCallback();
 
             expect(iceDummyResource.getCurrentWeather).toHaveBeenCalledWith('Leuven', 'be');
