@@ -10,6 +10,7 @@
         <li><a ng-click="examples.goToAnchor('service')">testing a service</a> [0.2.0]</li>
         <li><a ng-click="examples.goToAnchor('directive')">testing a directive</a> [0.2.0]</li>
         <li><a ng-click="examples.goToAnchor('directiveConfig')">testing a directive configuration</a> [0.7.0]</li>
+        <li><a ng-click="examples.goToAnchor('componentController')">testing a component's controller</a> [0.9.0]</li>
         <li><a ng-click="examples.goToAnchor('filter')">testing a filter</a> [0.6.1]</li>
         <li><a ng-click="examples.goToAnchor('inject')">injecting a service</a> [0.2.0]</li>
         <li><a ng-click="examples.goToAnchor('mockPromise')">mocking a promise</a> [0.2.0]</li>
@@ -202,6 +203,34 @@
             <span class="indent2 other"><span class="ice">yourDirective</span>.<span class="special">link</span>(scope);</span>
             <span class="indent2 other"></span>
             <span class="indent2 other">expect(scope. ...). ...</span>
+            <span class="indent other">});</span>
+            <span class="other">});</span>
+        </code>
+    </pre>
+
+    <h4 id="componentController">Testing a component's controller</h4>
+
+    <p>With the 'componentController' builder you get the controller by providing the module- and componentName as input.</p>
+
+    <pre>
+        <code>
+            <span class="other">'use strict';</span>
+            <span class="other"></span>
+            <span class="other">describe('yourComponent:', function() {</span>
+            <span class="indent ice">var yourComponentCtrl;</span>
+            <span class="indent other"></span>
+            <span class="indent special">beforeEach(function () {</span>
+            <span class="indent2 ice">yourComponentCtrl = iceUnit.builder</span>
+            <span class="indent4 ice">.componentController(<span class="special">&lt;directive module&gt;</span>, <span class="special">'yourComponent'</span>)</span>
+            <span class="indent4 optional">[.withMock(&lt;injectKey&gt;, &lt;mock&gt;)]</span>
+            <span class="indent4 optional">[.skipModuleLoad()]</span>
+            <span class="indent4 optional">[.withBindings({&lt;...&gt;)}]<span class="indent special">// You can provide an object with properties to add to the controller before invoking the constructor. This is used to simulate the bindToController feature and simplify certain kinds of tests.</span></span>
+            <span class="indent4 optional">[.doNotInitializeImmediately()]<span class="indent special">// If you do not want the controller's $onInit() to be invoked automatically</span></span>
+            <span class="indent4 ice">.build();</span>
+            <span class="indent special">});</span>
+            <span class="indent other"></span>
+            <span class="indent other">it('...', function() {</span>
+            <span class="indent2 other"><span class="ice">yourComponentCtrl</span>. <span class="special">...</span>;</span>
             <span class="indent other">});</span>
             <span class="other">});</span>
         </code>
