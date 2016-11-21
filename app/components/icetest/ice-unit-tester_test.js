@@ -377,6 +377,52 @@ var iceUnit = (function() {
         return directive;
     };
 
+    function ComponentControllerBuilder(moduleName, componentName) {
+        this.moduleName = moduleName;
+        this.componentName = componentName;
+        this.injectionLocals = {};
+        this.loadModule = true;
+        this.bindings = {};
+        this.initializeImmediately = true;
+    }
+
+    ComponentControllerBuilder.prototype.withMock = function(injectKey, mock) {
+        this.injectionLocals[injectKey] = mock;
+        return this;
+    };
+
+    ComponentControllerBuilder.prototype.skipModuleLoad = function() {
+        this.loadModule = false;
+        return this;
+    };
+
+    ComponentControllerBuilder.prototype.withBindings = function(bindings) {
+        this.bindings = bindings;
+        return this;
+    };
+
+    ComponentControllerBuilder.prototype.doNotInitializeImmediately = function() {
+        this.initializeImmediately = false;
+        return this;
+    };
+
+    ComponentControllerBuilder.prototype.build = function() {
+        if (this.loadModule === true) {
+            angular.mock.module(this.moduleName);
+        }
+
+        var $componentController = injectService('$componentController');
+        var $rootScope = injectService('$rootScope');
+
+        var controller = $componentController(this.componentName, this.injectionLocals, this.bindings);
+
+        if (this.initializeImmediately && controller.$onInit) {
+            controller.$onInit();
+        }
+
+        return controller;
+    };
+
     function FilterBuilder(moduleName, filterName) {
         this.moduleName = moduleName;
         this.filterName = filterName;
@@ -510,6 +556,15 @@ var iceUnit = (function() {
                 return undefined;
             }
             return new DirectiveConfigBuilder(moduleName, directiveName);
+        },
+        componentController: function(moduleName, componentName) {
+            if (typeof moduleName === 'undefined') {
+                return undefined;
+            }
+            if (typeof componentName === 'undefined') {
+                return undefined;
+            }
+            return new ComponentControllerBuilder(moduleName, componentName);
         },
         filter: function(moduleName, filterName) {
             if (typeof moduleName === 'undefined') {
